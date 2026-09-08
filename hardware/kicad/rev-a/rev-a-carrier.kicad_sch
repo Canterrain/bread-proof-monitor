@@ -1,0 +1,1935 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "8f2b6a10-1a2b-4c3d-9e4f-5a6b7c8d9e01")
+	(paper "A3")
+	(lib_symbols
+		(symbol "RevA_Sensors:ESP32_EL_SM_012_MODULE"
+			(exclude_from_sim no)
+			(in_bom no)
+			(on_board yes)
+			(property "Reference" "U"
+				(at 0 21.59 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "EL-SM-012"
+				(at 0 -21.59 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "RevA_Sensors:ESP32_EL_SM_012_MODULE_OUTLINE"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "ELEGOO EL-SM-012 ESP32 module, ASIN B0D8T53CQ5 -- removable, user-installed plug-in module. NOT a carrier PCBA/BOM item: not procured or soldered by the assembly house. Plugs into carrier sockets J1+J2 (Samtec SSW-115-01-T-S)."
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "ESP32_EL_SM_012_MODULE_1_1"
+			(rectangle
+				(start -8.89 19.05)
+				(end 8.89 -19.05)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			)
+		)
+		(symbol "RevA_Sensors:SSW_115_01_T_S_ROWA"
+			(pin_names
+				(offset 1.016)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at 0 22.86 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "SSW-115-01-T-S"
+				(at 0 -22.86 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "RevA_Sensors:SSW-115-01-T-S_1x15"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Samtec SSW-115-01-T-S, 1x15, 2.54mm pitch, THT, lead-free solderable -- carrier-side socket under ESP32 row A (all pins NC on this carrier; pin names shown are the EL-SM-012's own function names for documentation). Carrier-assembled/soldered part."
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+
+			(symbol "SSW_115_01_T_S_ROWA_1_1"
+			(rectangle
+				(start -2.54 20.32)
+				(end 2.54 -20.32)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(pin passive line
+				(at -6.35 17.78 0)
+				(length 3.81)
+				(name "VIN"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 15.24 0)
+				(length 3.81)
+				(name "GND"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 12.7 0)
+				(length 3.81)
+				(name "GPIO13"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 10.16 0)
+				(length 3.81)
+				(name "GPIO12"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 7.62 0)
+				(length 3.81)
+				(name "GPIO14"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 5.08 0)
+				(length 3.81)
+				(name "GPIO27"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "6"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 2.54 0)
+				(length 3.81)
+				(name "GPIO26"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "7"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 0.0 0)
+				(length 3.81)
+				(name "GPIO25"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "8"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -2.54 0)
+				(length 3.81)
+				(name "GPIO33"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "9"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -5.08 0)
+				(length 3.81)
+				(name "GPIO32"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "10"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -7.62 0)
+				(length 3.81)
+				(name "GPIO35"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "11"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -10.16 0)
+				(length 3.81)
+				(name "GPIO34"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "12"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -12.7 0)
+				(length 3.81)
+				(name "GPIO39"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "13"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -15.24 0)
+				(length 3.81)
+				(name "GPIO36"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "14"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -17.78 0)
+				(length 3.81)
+				(name "EN"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "15"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			)
+		)
+		(symbol "RevA_Sensors:SSW_115_01_T_S_ROWB"
+			(pin_names
+				(offset 1.016)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at 0 22.86 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "SSW-115-01-T-S"
+				(at 0 -22.86 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "RevA_Sensors:SSW-115-01-T-S_1x15"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Samtec SSW-115-01-T-S, 1x15, 2.54mm pitch, THT, lead-free solderable -- carrier-side socket under ESP32 row B (carries 3V3/GND/SCL/SDA). Carrier-assembled/soldered part."
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+
+			(symbol "SSW_115_01_T_S_ROWB_1_1"
+			(rectangle
+				(start -2.54 20.32)
+				(end 2.54 -20.32)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(pin passive line
+				(at -6.35 17.78 0)
+				(length 3.81)
+				(name "3V3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 15.24 0)
+				(length 3.81)
+				(name "GND"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 12.7 0)
+				(length 3.81)
+				(name "GPIO15"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 10.16 0)
+				(length 3.81)
+				(name "GPIO2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 7.62 0)
+				(length 3.81)
+				(name "GPIO4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 5.08 0)
+				(length 3.81)
+				(name "GPIO16"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "6"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 2.54 0)
+				(length 3.81)
+				(name "GPIO17"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "7"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 0.0 0)
+				(length 3.81)
+				(name "GPIO5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "8"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -2.54 0)
+				(length 3.81)
+				(name "GPIO18"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "9"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -5.08 0)
+				(length 3.81)
+				(name "GPIO19"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "10"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -7.62 0)
+				(length 3.81)
+				(name "GPIO21_SCL"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "11"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -10.16 0)
+				(length 3.81)
+				(name "GPIO3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "12"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -12.7 0)
+				(length 3.81)
+				(name "GPIO1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "13"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -15.24 0)
+				(length 3.81)
+				(name "GPIO22_SDA"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "14"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -17.78 0)
+				(length 3.81)
+				(name "GPIO23"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "15"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			)
+		)
+		(symbol "RevA_Sensors:VL53L0X_V2"
+			(pin_names
+				(offset 1.016)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at 0 11.43 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "SSW-106-01-T-S"
+				(at 0 -11.43 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "RevA_Sensors:VL53L0X_V2_1x06_2H_PRELIM"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Carrier-side socket: Samtec SSW-106-01-T-S, 1x6, 2.54mm pitch, THT, lead-free solderable. The ALAMSCN black VL53L0X-V2 breakout plugs into this socket via its own supplied male header -- user-installed, not procured/soldered by the assembly house."
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Manufacturer" "Samtec"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "MPN" "SSW-106-01-T-S"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Plugin_Module" "ALAMSCN black VL53L0X-V2, ASIN B0DGL2P6XC (user-installed, not a NextPCB-procured/soldered part)"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "VL53L0X_V2_1_1"
+			(rectangle
+				(start -2.54 8.89)
+				(end 2.54 -8.89)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(pin passive line
+				(at -6.35 6.35 0)
+				(length 3.81)
+				(name "VIN"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 3.81 0)
+				(length 3.81)
+				(name "GND"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 1.27 0)
+				(length 3.81)
+				(name "SCL"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -1.27 0)
+				(length 3.81)
+				(name "SDA"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -3.81 0)
+				(length 3.81)
+				(name "GPIO1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -6.35 0)
+				(length 3.81)
+				(name "XSHUT"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "6"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			)
+		)
+		(symbol "RevA_Sensors:SHT31_GY_SHT31_D"
+			(pin_names
+				(offset 1.016)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at 0 8.89 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "SSW-104-01-T-S"
+				(at 0 -8.89 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "RevA_Sensors:SHT31_GY-SHT31-D_1x04_PRELIM"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Carrier-side socket: Samtec SSW-104-01-T-S, 1x4, 2.54mm pitch, THT, lead-free solderable. The HiLetgo GY-SHT31-D breakout plugs into this socket via its own supplied male header -- user-installed, not procured/soldered by the assembly house."
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Manufacturer" "Samtec"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "MPN" "SSW-104-01-T-S"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Plugin_Module" "HiLetgo GY-SHT31-D, ASIN B07ZSZW92J (user-installed, not a NextPCB-procured/soldered part)"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "SHT31_GY_SHT31_D_1_1"
+			(rectangle
+				(start -2.54 6.35)
+				(end 2.54 -6.35)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(pin passive line
+				(at -6.35 3.81 0)
+				(length 3.81)
+				(name "VIN"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 1.27 0)
+				(length 3.81)
+				(name "GND"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -1.27 0)
+				(length 3.81)
+				(name "SCL"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -6.35 -3.81 0)
+				(length 3.81)
+				(name "SDA"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 54.61 142.24) (xy 46.99 142.24)
+		)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(uuid "07f4cb59-fed3-4223-835e-63be60cb7051")
+	)
+	(wire
+		(pts
+			(xy 54.61 144.78) (xy 46.99 144.78)
+		)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(uuid "89adf51d-f17e-4b01-bf85-68ecaabc637a")
+	)
+	(wire
+		(pts
+			(xy 54.61 167.64) (xy 46.99 167.64)
+		)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(uuid "d0d3719c-8992-499b-82d9-d13f2c561c63")
+	)
+	(wire
+		(pts
+			(xy 54.61 175.26) (xy 46.99 175.26)
+		)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(uuid "8022d2d5-62da-4ad0-aa9e-bea7c17c11f9")
+	)
+	(wire
+		(pts
+			(xy 146.05 82.55) (xy 138.43 82.55)
+		)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(uuid "5af958a1-b2a0-4ad2-ab53-5f1a6e54b568")
+	)
+	(wire
+		(pts
+			(xy 146.05 85.09) (xy 138.43 85.09)
+		)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(uuid "9d2d5128-9d92-4e52-a9f2-5c3d2aad4693")
+	)
+	(wire
+		(pts
+			(xy 146.05 87.63) (xy 138.43 87.63)
+		)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(uuid "e52cc165-b6b1-4d82-9a22-3d67a9904567")
+	)
+	(wire
+		(pts
+			(xy 146.05 90.17) (xy 138.43 90.17)
+		)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(uuid "af58c624-68a8-4116-8aa2-69a95f76e8f2")
+	)
+	(wire
+		(pts
+			(xy 146.05 146.05) (xy 138.43 146.05)
+		)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(uuid "03f344e7-0b48-4e91-92cc-64aa4e7d81cb")
+	)
+	(wire
+		(pts
+			(xy 146.05 148.59) (xy 138.43 148.59)
+		)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(uuid "1c8aad10-c4f3-46a2-977f-467c9c02a45f")
+	)
+	(wire
+		(pts
+			(xy 146.05 151.13) (xy 138.43 151.13)
+		)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(uuid "b8ac23d1-037c-482c-8085-b0907b9564c8")
+	)
+	(wire
+		(pts
+			(xy 146.05 153.67) (xy 138.43 153.67)
+		)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(uuid "42538b9e-d315-4a8e-8b9a-aa1d1a737c05")
+	)
+	(label "3V3"
+		(at 46.99 142.24 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "988fa1f9-f425-4c37-a671-aaf9e8d14469")
+	)
+	(label "GND"
+		(at 46.99 144.78 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "6d037ede-12bb-4134-9da7-c92e4f4d1253")
+	)
+	(label "SCL"
+		(at 46.99 167.64 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "0e6f8ea0-8254-4c24-9d05-fc6ebafcc061")
+	)
+	(label "SDA"
+		(at 46.99 175.26 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "b149f447-45f9-4986-bcd7-22d79a1673f0")
+	)
+	(label "3V3"
+		(at 138.43 82.55 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "d97f29b9-b3ca-4588-9db5-10c4d68e5b69")
+	)
+	(label "GND"
+		(at 138.43 85.09 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "b4f50faf-bab8-4e25-a115-64e2b9042574")
+	)
+	(label "SCL"
+		(at 138.43 87.63 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "4098f824-fc2e-4655-9a74-45b1c2a229ea")
+	)
+	(label "SDA"
+		(at 138.43 90.17 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "9ffc8dcd-2143-4446-bd1c-8881503e2014")
+	)
+	(label "3V3"
+		(at 138.43 146.05 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "3a36f13d-7893-4cb9-81ba-9bb32302e93d")
+	)
+	(label "GND"
+		(at 138.43 148.59 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "368933b3-0b20-4a5c-8bc6-69dcf451811a")
+	)
+	(label "SCL"
+		(at 138.43 151.13 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "754a491b-df91-44b8-9d2f-c3f8ff293366")
+	)
+	(label "SDA"
+		(at 138.43 153.67 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "e32e650b-4759-4efc-8130-e6571ff35548")
+	)
+	(no_connect
+		(at 54.61 40.64)
+		(uuid "62dc7f5a-7cd3-4249-87bd-06a1d3ace420")
+	)
+	(no_connect
+		(at 54.61 43.18)
+		(uuid "dd5849f6-d92e-4c2c-b808-91119d31cb15")
+	)
+	(no_connect
+		(at 54.61 45.72)
+		(uuid "c495c3e7-cc12-4d90-bdd8-e198dd5a9c9a")
+	)
+	(no_connect
+		(at 54.61 48.26)
+		(uuid "284e0073-f3c0-4f12-b566-4f4dc6c0f8c8")
+	)
+	(no_connect
+		(at 54.61 50.8)
+		(uuid "426cdca9-4964-4651-822c-4ab4cafd34df")
+	)
+	(no_connect
+		(at 54.61 53.34)
+		(uuid "3c1b33c0-1398-44b3-9fc2-bb15444b7808")
+	)
+	(no_connect
+		(at 54.61 55.88)
+		(uuid "7e9bbce1-5624-43e5-977d-9bb1034bbd28")
+	)
+	(no_connect
+		(at 54.61 58.42)
+		(uuid "46be9c38-2696-4811-9954-16d212916155")
+	)
+	(no_connect
+		(at 54.61 60.96)
+		(uuid "3f9032a0-44c0-4c3c-a181-ddc396a15699")
+	)
+	(no_connect
+		(at 54.61 63.5)
+		(uuid "56ad318d-5ead-4ab2-aa77-bb74ee080249")
+	)
+	(no_connect
+		(at 54.61 66.04)
+		(uuid "6ebecdad-be1d-45d6-aa1e-b3478d92e04c")
+	)
+	(no_connect
+		(at 54.61 68.58)
+		(uuid "e93bc3cf-ec86-4d39-8801-ad048252d4b0")
+	)
+	(no_connect
+		(at 54.61 71.12)
+		(uuid "90309ca5-be59-4724-b8d9-e054e967b80d")
+	)
+	(no_connect
+		(at 54.61 73.66)
+		(uuid "7f07e2aa-5897-4f0f-8af2-c70bb94c0a0d")
+	)
+	(no_connect
+		(at 54.61 76.2)
+		(uuid "93984b74-2a43-45b5-b8c1-ef114efcc114")
+	)
+	(no_connect
+		(at 54.61 147.32)
+		(uuid "cc76736e-df26-4950-b239-f09497d32f45")
+	)
+	(no_connect
+		(at 54.61 149.86)
+		(uuid "36206033-4453-4147-93f4-aeab2c3b62c4")
+	)
+	(no_connect
+		(at 54.61 152.4)
+		(uuid "3a02671d-6735-4db3-9f51-83d4ee48fd6c")
+	)
+	(no_connect
+		(at 54.61 154.94)
+		(uuid "1df521e4-3695-4361-b2da-34a03262a22c")
+	)
+	(no_connect
+		(at 54.61 157.48)
+		(uuid "76f50976-fb64-4dbe-af54-f156d923f98d")
+	)
+	(no_connect
+		(at 54.61 160.02)
+		(uuid "d1c2ff40-4adb-4242-ac9c-bb7b54953aeb")
+	)
+	(no_connect
+		(at 54.61 162.56)
+		(uuid "b733a744-9cb8-4d6b-a132-10a0595dbbcc")
+	)
+	(no_connect
+		(at 54.61 165.1)
+		(uuid "964bb5e1-fced-4e64-a8bd-638e3ee9c18f")
+	)
+	(no_connect
+		(at 54.61 170.18)
+		(uuid "3c076b33-5c67-406f-a22f-fbaf761cb297")
+	)
+	(no_connect
+		(at 54.61 172.72)
+		(uuid "0a6397f9-2232-4a08-afdb-af53c411f8ab")
+	)
+	(no_connect
+		(at 54.61 177.8)
+		(uuid "c9a1fa62-1780-41bf-aa22-d91e2670d30a")
+	)
+	(no_connect
+		(at 146.05 92.71)
+		(uuid "8ba58cbe-a1ba-4666-b726-e159a379f6b1")
+	)
+	(no_connect
+		(at 146.05 95.25)
+		(uuid "f6265bf8-04c5-44d4-9ce4-a7c799a85ac9")
+	)
+	(symbol
+		(lib_id "RevA_Sensors:ESP32_EL_SM_012_MODULE")
+		(at 60.96 109.22 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp yes)
+		(uuid "5ae13df3-bfb9-4c34-abfc-70109c3d9789")
+		(property "Reference" "U1"
+			(at 60.96 85.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "EL-SM-012"
+			(at 60.96 133.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "RevA_Sensors:ESP32_EL_SM_012_MODULE_OUTLINE"
+			(at 60.96 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 60.96 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(instances
+			(project "rev-a-carrier"
+				(path "/8f2b6a10-1a2b-4c3d-9e4f-5a6b7c8d9e01"
+					(reference "U1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "RevA_Sensors:SSW_115_01_T_S_ROWA")
+		(at 60.96 58.42 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "7316cdcc-9af1-4cdb-84e5-2b0b98eb06d3")
+		(property "Reference" "J1"
+			(at 60.96 34.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SSW-115-01-T-S"
+			(at 60.96 82.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "RevA_Sensors:SSW-115-01-T-S_1x15"
+			(at 60.96 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 60.96 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Samtec"
+			(at 60.96 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "SSW-115-01-T-S"
+			(at 60.96 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Notes" "ESP32 carrier socket, row A (all pins NC on this carrier) -- one of two identical sockets under the ESP32 module footprint (see J2, U1)"
+			(at 60.96 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "134a495b-7e89-46a5-8eb7-dd3ba6c25722")
+		)
+		(pin "2"
+			(uuid "224f6b4f-e74d-4777-8a72-96edce7bed65")
+		)
+		(pin "3"
+			(uuid "e1c12b16-3b18-4944-8cfb-ea64fff8fc0c")
+		)
+		(pin "4"
+			(uuid "53891c54-6a17-4383-b117-7123cba0e025")
+		)
+		(pin "5"
+			(uuid "b32a7aa7-1a6f-4bb0-a31a-6c350e03cc29")
+		)
+		(pin "6"
+			(uuid "9657ccc5-6a5c-4799-833d-118d8622a0d8")
+		)
+		(pin "7"
+			(uuid "20365a7e-d29a-4a47-8617-8b61e334ddfc")
+		)
+		(pin "8"
+			(uuid "75a01674-606d-404b-9041-c2bb4666ed12")
+		)
+		(pin "9"
+			(uuid "df246e70-51bd-4864-bb20-0fc2faa9454d")
+		)
+		(pin "10"
+			(uuid "f90470cb-d3d6-4c23-b6b6-a2c7526800fb")
+		)
+		(pin "11"
+			(uuid "36ad1c11-4f18-4a08-b66c-46ba547503ee")
+		)
+		(pin "12"
+			(uuid "e46256ee-f670-475e-acbf-28854d21b252")
+		)
+		(pin "13"
+			(uuid "af685b33-90a8-48ea-93ab-95f884e5caba")
+		)
+		(pin "14"
+			(uuid "4d461d03-918c-4f45-87cb-eee49dec1606")
+		)
+		(pin "15"
+			(uuid "b39d6157-ac47-4808-9f67-b3851a808c25")
+		)
+		(instances
+			(project "rev-a-carrier"
+				(path "/8f2b6a10-1a2b-4c3d-9e4f-5a6b7c8d9e01"
+					(reference "J1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "RevA_Sensors:SSW_115_01_T_S_ROWB")
+		(at 60.96 160.02 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "5327e336-4a2d-4180-a088-2f28a18577ea")
+		(property "Reference" "J2"
+			(at 60.96 136.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SSW-115-01-T-S"
+			(at 60.96 184.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "RevA_Sensors:SSW-115-01-T-S_1x15"
+			(at 60.96 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 60.96 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Samtec"
+			(at 60.96 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "SSW-115-01-T-S"
+			(at 60.96 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Notes" "ESP32 carrier socket, row B (carries 3V3/GND/SCL/SDA) -- one of two identical sockets under the ESP32 module footprint (see J1, U1)"
+			(at 60.96 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "0f79dbae-1c93-4d4c-810b-3838f7be25f3")
+		)
+		(pin "2"
+			(uuid "1882045d-889e-4674-aee8-5d2aa2cd15ee")
+		)
+		(pin "3"
+			(uuid "5949e6c2-d443-4632-8981-ca4ceb906c07")
+		)
+		(pin "4"
+			(uuid "40948f56-40c4-42ac-bedd-db558e606112")
+		)
+		(pin "5"
+			(uuid "beacee00-bb13-42a1-9db3-edbf114939d9")
+		)
+		(pin "6"
+			(uuid "9c4ba1cc-3672-4b52-9dca-2289a32b9a3c")
+		)
+		(pin "7"
+			(uuid "c9f51f74-bf8e-42ac-beae-b0bb226ef51c")
+		)
+		(pin "8"
+			(uuid "e046494d-a2e8-45a4-9685-c1416d1b4b29")
+		)
+		(pin "9"
+			(uuid "a2cdf31e-ea13-4595-b30f-38d30b1f3ca7")
+		)
+		(pin "10"
+			(uuid "7443d459-acc2-4058-97bb-792c33ce857e")
+		)
+		(pin "11"
+			(uuid "235bce89-fc35-422f-9dde-cb10a7d8073b")
+		)
+		(pin "12"
+			(uuid "4c0d4b92-c848-4e86-bac4-9d7eb0587e67")
+		)
+		(pin "13"
+			(uuid "ec2669b0-47b7-48f8-8687-4ff58d016c32")
+		)
+		(pin "14"
+			(uuid "95ee84a5-3245-4cec-a64c-be62e109c676")
+		)
+		(pin "15"
+			(uuid "83a3bea6-54b5-4f9c-903a-48728c775efc")
+		)
+		(instances
+			(project "rev-a-carrier"
+				(path "/8f2b6a10-1a2b-4c3d-9e4f-5a6b7c8d9e01"
+					(reference "J2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "RevA_Sensors:VL53L0X_V2")
+		(at 152.4 88.9 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "d30f42bb-936a-4757-8dba-ba23f282933e")
+		(property "Reference" "J3"
+			(at 152.4 64.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SSW-106-01-T-S"
+			(at 152.4 112.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "RevA_Sensors:VL53L0X_V2_1x06_2H_PRELIM"
+			(at 152.4 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 152.4 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Samtec"
+			(at 152.4 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "SSW-106-01-T-S"
+			(at 152.4 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Plugin_Module" "ALAMSCN black VL53L0X-V2, ASIN B0DGL2P6XC (user-installed, not a NextPCB-procured/soldered part)"
+			(at 152.4 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3e05d2f9-3fb0-4bd3-aa1b-6b6fda9b7c29")
+		)
+		(pin "2"
+			(uuid "37f15389-56b0-4efa-8622-7a3cc8ee3abf")
+		)
+		(pin "3"
+			(uuid "ba1718ff-63b5-4c8e-90a3-8d8062af10f0")
+		)
+		(pin "4"
+			(uuid "78234f0c-8a04-4c5c-94df-f906e3ab2638")
+		)
+		(pin "5"
+			(uuid "b339787b-aa10-4262-add8-30b56cf874d4")
+		)
+		(pin "6"
+			(uuid "d8cfa8d2-5980-4ceb-b2f0-a25169a4495a")
+		)
+		(instances
+			(project "rev-a-carrier"
+				(path "/8f2b6a10-1a2b-4c3d-9e4f-5a6b7c8d9e01"
+					(reference "J3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "RevA_Sensors:SHT31_GY_SHT31_D")
+		(at 152.4 149.86 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "13c09f94-ff8c-41b6-89e2-9af0aeaebcc1")
+		(property "Reference" "J4"
+			(at 152.4 125.86000000000001 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SSW-104-01-T-S"
+			(at 152.4 173.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "RevA_Sensors:SHT31_GY-SHT31-D_1x04_PRELIM"
+			(at 152.4 149.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 152.4 149.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Samtec"
+			(at 152.4 149.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "SSW-104-01-T-S"
+			(at 152.4 149.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Plugin_Module" "HiLetgo GY-SHT31-D, ASIN B07ZSZW92J (user-installed, not a NextPCB-procured/soldered part)"
+			(at 152.4 149.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c7f7f7e5-cb22-46d1-8b39-63c203ecaf62")
+		)
+		(pin "2"
+			(uuid "ef951730-9374-4e85-8a23-6219a83863d9")
+		)
+		(pin "3"
+			(uuid "6a143a02-5858-4eac-98e8-310cc48d7660")
+		)
+		(pin "4"
+			(uuid "b1f55a60-b9ce-4d03-9f4d-1058ef1e19d2")
+		)
+		(instances
+			(project "rev-a-carrier"
+				(path "/8f2b6a10-1a2b-4c3d-9e4f-5a6b7c8d9e01"
+					(reference "J4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+)

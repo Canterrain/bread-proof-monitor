@@ -1,0 +1,24 @@
+** Drc report for sensor-footprint-validation.kicad_pcb **
+** Created on 2026-08-24T18:01:55 **
+** Report includes: Errors, Warnings, Exclusions **
+
+** Found 2 DRC violations **
+[lib_footprint_mismatch]: Footprint 'SHT31_GY-SHT31-D_1x04_PRELIM' does not match copy in library 'ProofMonitor_Sensors'
+    Local override; warning
+    @(55.0000 mm, 60.0000 mm): Footprint J4
+[lib_footprint_mismatch]: Footprint 'VL53L0X_V2_1x06_2H_PRELIM' does not match copy in library 'ProofMonitor_Sensors'
+    Local override; warning
+    @(115.0000 mm, 60.0000 mm): Footprint J3
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **

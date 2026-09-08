@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "ProofMonitor_Sensors")(type "KiCad")(uri "${KIPRJMOD}/ProofMonitor_Sensors.pretty")(options "")(descr "Bread Proof Monitor preliminary sensor footprints"))
+)

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Install Bread Proof Monitor on your ESP32 over USB, then connect it to Wi-Fi and start monitoring your dough.">
+  <meta name="theme-color" content="#18130f">
+  <title>Set Up Your Bread Proof Monitor</title>
+  <link rel="stylesheet" href="installer.css">
+  <script type="module" src="installer.js"></script>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Bread Proof Monitor</p>
+      <h1>Set up your monitor.</h1>
+      <p class="intro">Install the software over USB, connect to Wi-Fi, and follow your dough from your phone.</p>
+    </header>
+
+    <section class="card install-card" aria-labelledby="install-title">
+      <div class="step-heading"><span class="step" aria-hidden="true">1</span><h2 id="install-title">Connect and install</h2></div>
+      <p>For an <strong>ESP32 Dev Module with 4 MB flash</strong>, including the ELEGOO EL-SM-012. Have a USB data cable and a desktop or laptop ready.</p>
+      <ol>
+        <li>Plug the board into your computer. Close Arduino IDE's serial monitor or any other app using its USB connection.</li>
+        <li>Click <strong>Connect</strong>, choose your board, then select <strong>Install</strong>.</li>
+        <li>For a first installation, select <strong>Erase device</strong>. Leave the board connected until installation finishes and it restarts.</li>
+      </ol>
+      <div class="install-action">
+        <p id="installer-status" role="status">Loading the installer…</p>
+        <esp-web-install-button id="install-button" manifest="firmware/manifest.json" hidden>
+          <button slot="activate" type="button">Connect</button>
+          <span slot="unsupported">This browser cannot connect over USB. Open this page in Chrome, Edge, or a Firefox version with Web Serial support on a computer.</span>
+          <span slot="not-allowed">Open the secure HTTPS version of this page to connect your board.</span>
+        </esp-web-install-button>
+        <p id="version" class="small" hidden></p>
+      </div>
+      <noscript><p class="notice">JavaScript is needed for the USB installer. Enable it and reload this page.</p></noscript>
+      <p class="small">Chrome and Edge are good choices. Firefox needs Web Serial support. Safari, iPhone, iPad, and Android aren't supported by this installer.</p>
+      <details>
+        <summary>Updating an existing monitor?</summary>
+        <p>Use the same button. If it already runs Bread Proof Monitor with the 4 MB / Huge APP layout, leave <strong>Erase device</strong> unchecked to keep its settings.</p>
+        <p>Erasing removes Wi-Fi details, calibration, proof progress, your ntfy topic, and learned targets. You'll need to complete setup again. Update between proofs.</p>
+      </details>
+    </section>
+
+    <section class="card" aria-labelledby="wifi-title">
+      <div class="step-heading"><span class="step" aria-hidden="true">2</span><h2 id="wifi-title">Connect it to your Wi-Fi</h2></div>
+      <p>After installation, leave the board powered on. On your phone or computer:</p>
+      <ol>
+        <li>Open your phone or computer's <strong>Wi-Fi settings</strong> and join <strong>ProofMonitor-Setup</strong>. The password is <code>sourdough</code>. Stay connected even if your device says there is no internet.</li>
+        <li>Open <a href="http://192.168.4.1" target="_blank" rel="noopener">http://192.168.4.1</a>.</li>
+        <li>Choose your home Wi-Fi and enter its password. For phone alerts, copy the generated topic and subscribe to it in the <a href="https://ntfy.sh/" target="_blank" rel="noopener">ntfy app</a>.</li>
+        <li>Save and wait for the monitor to restart, then reconnect your phone or computer to your home Wi-Fi.</li>
+      </ol>
+      <p class="small">An updated monitor with working saved Wi-Fi will reconnect on its own. USB installation ends before Wi-Fi setup; you don't need the installer's optional console to continue.</p>
+    </section>
+
+    <section class="card" aria-labelledby="proof-title">
+      <div class="step-heading"><span class="step" aria-hidden="true">3</span><h2 id="proof-title">Start your first proof</h2></div>
+      <p>Open <a href="http://proofmonitor.local" target="_blank" rel="noopener">http://proofmonitor.local</a> on your home network.</p>
+      <ol>
+        <li>Choose a bread profile and apply its target.</li>
+        <li>With the container empty and the lid in place, press <strong>Set Empty Setup</strong>.</li>
+        <li>Add the dough, let the lid settle, and press <strong>Set Starting Dough Height</strong>.</li>
+      </ol>
+      <p>Follow the dashboard for folds and the next step. Pause monitoring before lifting the lid, and check your dough when a target is reached.</p>
+    </section>
+
+    <section class="help" aria-labelledby="help-title">
+      <h2 id="help-title">Something not working?</h2>
+      <details><summary>The board isn't in the USB list</summary><p>Try another data cable or USB port. Close apps using the board's serial port. If the computer still can't see it, check the USB-to-serial driver supplied by your board manufacturer.</p></details>
+      <details><summary>The installer can't connect to the board</summary><p>Unplug and reconnect it, then try again. If necessary, hold <strong>BOOT</strong> while connection begins and release it when writing starts. Select the original ESP32 board; this firmware isn't for C3, S3, or P4 chips.</p></details>
+      <details><summary>I can't find the setup Wi-Fi network</summary><p>Allow the board to restart. Press its <strong>EN / Reset</strong> button if needed. If you updated without erasing, it may already be on your saved home network.</p></details>
+      <details><summary>proofmonitor.local doesn't open</summary><p>Make sure you're on the same home network. Use the monitor's IP address from your router's connected-device list if the name doesn't resolve.</p></details>
+      <details><summary>The dashboard can't find a sensor</summary><p>Check power and ground on both breakouts. This project uses <strong>GPIO22 for SDA</strong> and <strong>GPIO21 for SCL</strong>. Reboot after reconnecting the sensors.</p></details>
+    </section>
+
+    <footer>
+      <p><a href="https://github.com/Canterrain/bread-proof-monitor">Project, wiring, and source code</a></p>
+      <p>Made by <a href="https://anoraker.com">Josh Hendrickson</a> · Installer powered by <a href="https://esphome.github.io/esp-web-tools/">ESP Web Tools</a></p>
+    </footer>
+  </main>
+</body>
+</html>

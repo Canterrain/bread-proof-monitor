@@ -1,0 +1,54 @@
+{
+  "version": "0.1.0-preview",
+  "builtAt": "2026-09-08T01:29:03+00:00",
+  "fqbn": "esp32:esp32:esp32:PartitionScheme=huge_app",
+  "sourceSha256": "1aa06d02dd9e0dd9c7c8f081d844bbce035cc13ec5cdaa80de6b655b67026cc4",
+  "sourceFiles": [
+    "app_state.cpp",
+    "app_state.h",
+    "bread_proof_monitor.ino",
+    "notifications.cpp",
+    "notifications.h",
+    "outcome_feedback.cpp",
+    "outcome_feedback.h",
+    "proof_state.cpp",
+    "proof_state.h",
+    "recipe_presets.cpp",
+    "recipe_presets.h",
+    "sensor_reader.cpp",
+    "sensor_reader.h",
+    "text_utils.cpp",
+    "text_utils.h",
+    "web_assets.h",
+    "web_dashboard.cpp",
+    "web_dashboard.h",
+    "wifi_setup.cpp",
+    "wifi_setup.h"
+  ],
+  "parts": [
+    {
+      "path": "bootloader.bin",
+      "offset": 4096,
+      "bytes": 25024,
+      "sha256": "f508dfe30f34c2490ec08caaa96f20dc2853f66a0a92f6fb759b205e82924f29"
+    },
+    {
+      "path": "partitions.bin",
+      "offset": 32768,
+      "bytes": 3072,
+      "sha256": "aaae2888c5a6a348004b5b436f47abb25ae32e72d9003902955a998eda723edd"
+    },
+    {
+      "path": "boot_app0.bin",
+      "offset": 57344,
+      "bytes": 8192,
+      "sha256": "f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0"
+    },
+    {
+      "path": "firmware.bin",
+      "offset": 65536,
+      "bytes": 1232864,
+      "sha256": "f12f7eaf7f216c599ea82ef56493381763e4a2546555c1f287cd7d72ebcf31bb"
+    }
+  ]
+}

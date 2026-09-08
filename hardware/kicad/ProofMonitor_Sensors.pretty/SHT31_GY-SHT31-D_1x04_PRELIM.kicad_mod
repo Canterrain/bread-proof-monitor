@@ -1,0 +1,146 @@
+(footprint "SHT31_GY-SHT31-D_1x04_PRELIM"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(descr "Preliminary underside interface for HiLetgo GY-SHT31-D, ASIN B07ZSZW92J")
+	(tags "SHT31 GY-SHT31-D 1x04 2.54mm preliminary")
+	(property "Reference" "J4"
+		(at 3.81 -2.3 0)
+		(layer "B.SilkS")
+		(uuid "7c35139a-3b75-43b2-ad06-eca4dc348c16")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(property "Value" "GY-SHT31-D"
+		(at 3.81 12.3 0)
+		(layer "B.Fab")
+		(uuid "a7fb3bf7-0c73-4520-8e86-bf527b934dde")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "429e7bc1-03f8-4ab4-8fc7-8add71f8f6cd")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "34cf4af6-639f-4da9-8bea-5a65939d8f3c")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr through_hole)
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_rect
+		(start -1.5 -1.5)
+		(end 9.15 11.6)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(fill no)
+		(layer "B.SilkS")
+		(uuid "c839e386-1643-46a9-b2b3-0cdc53861b68")
+	)
+	(fp_rect
+		(start -2 -2)
+		(end 9.65 13.25)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "B.CrtYd")
+		(uuid "d8cc384c-3c0f-482c-acf0-801f575786fe")
+	)
+	(fp_circle
+		(center 3.81 9.6)
+		(end 5.41 9.6)
+		(stroke
+			(width 0.1)
+			(type dash)
+		)
+		(fill no)
+		(layer "B.Fab")
+		(uuid "7e66d57c-aa99-4e6b-b156-00c10c9b50f7")
+	)
+	(fp_text user "PRELIM: VERIFY RETENTION HOLE"
+		(at 3.81 10.6 0)
+		(layer "B.Fab")
+		(uuid "ec948252-2617-4df6-b2c5-8cb39239256d")
+		(effects
+			(font
+				(size 0.65 0.65)
+				(thickness 0.1)
+			)
+			(justify mirror)
+		)
+	)
+	(fp_text user "BOARD OUTLINE 10.7 x 13.1 mm"
+		(at 3.81 13.4 0)
+		(layer "B.Fab")
+		(uuid "7c42c161-fead-4977-a261-bbd800b2200d")
+		(effects
+			(font
+				(size 0.75 0.75)
+				(thickness 0.12)
+			)
+			(justify mirror)
+		)
+	)
+	(pad "1" thru_hole rect
+		(at 0 0)
+		(size 1.9 1.9)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "73bd1575-68e7-4f84-acf7-156d21c51905")
+	)
+	(pad "2" thru_hole circle
+		(at 2.54 0)
+		(size 1.9 1.9)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "82aa3136-7c84-4ee1-828b-01f43db594d4")
+	)
+	(pad "3" thru_hole circle
+		(at 5.08 0)
+		(size 1.9 1.9)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "8f0d2297-fd8b-4056-80ac-47b5da5f558e")
+	)
+	(pad "4" thru_hole circle
+		(at 7.62 0)
+		(size 1.9 1.9)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "67d8f633-adf6-433d-a39a-7e35b19d71fe")
+	)
+	(embedded_fonts no)
+)

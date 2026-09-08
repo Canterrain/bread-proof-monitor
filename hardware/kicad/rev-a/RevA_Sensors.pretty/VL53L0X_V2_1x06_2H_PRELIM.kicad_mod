@@ -1,0 +1,223 @@
+(footprint "VL53L0X_V2_1x06_2H_PRELIM"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(descr "Preliminary underside interface for ALAMSCN black VL53L0X-V2, ASIN B0DGL2P6XC. Carrier-side socket: Samtec SSW-106-01-T-S (1x6, 2.54mm pitch, THT, lead-free solderable). Pad pitch/drill/courtyard verified against Samtec's published SSW/SSQ mechanical drawing (2.54mm pitch; body length = 2.54mm x N + 0.51mm = 15.75mm for 6 positions, vs. 15.70mm drawn here; single-row body width = 2.41mm / .095in per Samtec's TH SSW drawing; 1.0mm drill matches KiCad's standard 2.54mm pin-socket land pattern) -- reused, not replaced. Mates with the breakout's own male header pins, no separate header part selected.")
+	(tags "VL53L0X V2 1x06 2.54mm 20mm mounting preliminary Samtec SSW-106-01-T-S")
+	(property "Reference" "J3"
+		(at 10 -9 0)
+		(layer "B.SilkS")
+		(uuid "0a02e46e-3a9c-43a3-b16b-accfb4837fb9")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(property "Value" "SSW-106-01-T-S"
+		(at 10 9 0)
+		(layer "B.Fab")
+		(uuid "7ae3c366-429f-4e7c-930e-ee413c9d0a4c")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(property "Plugin_Module" "ALAMSCN black VL53L0X-V2, ASIN B0DGL2P6XC (user-installed, not a NextPCB-procured/soldered part)"
+		(at 10 9 0)
+		(layer "B.Fab")
+		(hide yes)
+		(uuid "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "c50edbdb-3b09-444f-a554-7bf12b2e7c1e")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "94e3f156-5b3e-493d-b746-65722232c276")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr through_hole)
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_rect
+		(start -2.5 -7.9)
+		(end 22.5 7.9)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(fill no)
+		(layer "Dwgs.User")
+		(uuid "0a071748-27c3-4b9a-975f-4699be7fe57a")
+	)
+	(fp_text user "VL53L0X MODULE ENVELOPE"
+		(at 10 -8.7 0)
+		(layer "Dwgs.User")
+		(uuid "e6f7a8b9-c0d1-4e2f-8a3b-4c5d6e7f8a9b")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(fp_rect
+		(start 2.125 4.145)
+		(end 17.875 6.555)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(fill no)
+		(layer "B.SilkS")
+		(uuid "f7a8b9c0-d1e2-4f3a-9b4c-5d6e7f8a9b0c")
+	)
+	(fp_rect
+		(start -3.5 -8.9)
+		(end 23.5 8.9)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "B.CrtYd")
+		(uuid "4934c51c-2e7f-4ae2-b134-85fcbb365ac8")
+	)
+	(fp_rect
+		(start 2.15 -5.35)
+		(end 17.85 5.35)
+		(stroke
+			(width 0.1)
+			(type dash)
+		)
+		(fill no)
+		(layer "B.Fab")
+		(uuid "445f5ceb-72d9-4fe5-b01b-0002079ecd4c")
+	)
+	(fp_text user "TOF OFFSET: 2.2mm NOMINAL, REV A (SEE mechanical-stackup.md)"
+		(at 10 -10.1 0)
+		(layer "B.Fab")
+		(uuid "ccaf8983-7eea-4d40-992b-e85cbe6594fe")
+		(effects
+			(font
+				(size 0.75 0.75)
+				(thickness 0.12)
+			)
+			(justify mirror)
+		)
+	)
+	(fp_text user "25.0 x 15.8 mm; H1-H2 = 20.0 mm"
+		(at 10 10.1 0)
+		(layer "B.Fab")
+		(uuid "abf5360b-4270-4463-ba4e-bd6ec25a7397")
+		(effects
+			(font
+				(size 0.75 0.75)
+				(thickness 0.12)
+			)
+			(justify mirror)
+		)
+	)
+	(fp_text user "SOCKET: SAMTEC SSW-106-01-T-S (FOOTPRINT VERIFIED)"
+		(at 10 11.3 0)
+		(layer "B.Fab")
+		(uuid "b6f1e2d4-9c3a-4e5f-8a2b-1d7c9e0f3a4b")
+		(effects
+			(font
+				(size 0.6 0.6)
+				(thickness 0.1)
+			)
+			(justify mirror)
+		)
+	)
+	(pad "" np_thru_hole circle
+		(at 0 0)
+		(size 3.2 3.2)
+		(drill 3.2)
+		(layers "*.Cu" "*.Mask")
+		(uuid "d3eaab47-3581-44b9-a37b-42f5d1332866")
+	)
+	(pad "" np_thru_hole circle
+		(at 20 0)
+		(size 3.2 3.2)
+		(drill 3.2)
+		(layers "*.Cu" "*.Mask")
+		(uuid "3ebec853-0837-42ca-9a48-0198caf5d130")
+	)
+	(pad "1" thru_hole rect
+		(at 3.65 5.35)
+		(size 1.9 1.9)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "a66d61db-6fc7-4ba2-a85e-0db262e4505d")
+	)
+	(pad "2" thru_hole circle
+		(at 6.19 5.35)
+		(size 1.9 1.9)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "80dc3251-c273-4647-bc08-3a19690982c7")
+	)
+	(pad "3" thru_hole circle
+		(at 8.73 5.35)
+		(size 1.9 1.9)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "110ce413-6c90-433c-b43a-bbf0372c8f83")
+	)
+	(pad "4" thru_hole circle
+		(at 11.27 5.35)
+		(size 1.9 1.9)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "57264eba-3ac2-4bcd-9b66-36fd338445d8")
+	)
+	(pad "5" thru_hole circle
+		(at 13.81 5.35)
+		(size 1.9 1.9)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "e366bbe1-62c4-47d3-b1ed-e9f2707ce2a0")
+	)
+	(pad "6" thru_hole circle
+		(at 16.35 5.35)
+		(size 1.9 1.9)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "8d0cb789-bdf8-4a40-b7a7-09778cb792f8")
+	)
+	(embedded_fonts no)
+)

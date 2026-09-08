@@ -1,0 +1,22 @@
+** Drc report for pcb_revert_test.kicad_pcb **
+** Created on 2026-08-27T06:34:26 **
+** Report includes: Errors, Warnings **
+
+** Found 1 DRC violations **
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning
+    @(-25.0000 mm, 17.0000 mm): Segment on Edge.Cuts
+    @(-25.8700 mm, 12.5000 mm): Rectangle of U1 on F.Silkscreen
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **

@@ -1,0 +1,4 @@
+(sym_lib_table
+	(version 7)
+	(lib (name "RevA_Sensors")(type "KiCad")(uri "${KIPRJMOD}/RevA_Sensors.kicad_sym")(options "")(descr "Rev A ESP32 carrier and sensor symbols"))
+)

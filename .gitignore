@@ -1,0 +1,11 @@
+.arduino/
+.DS_Store
+._*
+*.swp
+*~
+__pycache__/
+*.pyc
+*.kicad_prl
+*.lck
+*-backups/
+*.bak

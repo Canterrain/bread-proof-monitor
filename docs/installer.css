@@ -1,0 +1,51 @@
+:root {
+  color-scheme: dark;
+  --bg: #18130f;
+  --surface: #211b16;
+  --text: #f8f3eb;
+  --muted: #c5b9ab;
+  --accent: #efb36d;
+  --line: #4b3a2c;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); padding: 3rem 1.25rem; font-size: 1rem; }
+main { max-width: 44rem; margin: 0 auto; }
+header { margin-bottom: 2rem; }
+.eyebrow { color: var(--accent); font-size: .875rem; letter-spacing: .09em; text-transform: uppercase; font-weight: 700; margin: 0 0 .65rem; }
+h1 { font-size: clamp(2rem, 5vw, 2.65rem); letter-spacing: -.035em; line-height: 1.15; margin: 0 0 1rem; }
+h2 { font-size: 1.25rem; line-height: 1.3; margin: 0; letter-spacing: -.015em; }
+p { margin: 1rem 0; }
+.intro { font-size: 1.125rem; color: var(--muted); max-width: 37rem; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 1rem; padding: 1.75rem; margin: 0 0 1.25rem; }
+.install-card { border-top: 3px solid var(--accent); }
+.step-heading { display: flex; gap: .8rem; align-items: center; margin-bottom: 1.2rem; }
+.step { flex: 0 0 2rem; height: 2rem; border: 1px solid var(--accent); border-radius: 50%; text-align: center; line-height: 1.9rem; color: var(--accent); font-weight: 650; }
+ol { padding-left: 1.3rem; margin: 1rem 0; }
+li { padding-left: .25rem; margin: .8rem 0; }
+li::marker { color: var(--accent); font-weight: 650; }
+a { color: #f4c690; text-underline-offset: .2em; overflow-wrap: anywhere; }
+a:hover { color: #fff1d7; }
+code { color: var(--text); background: #352a21; padding: .15rem .4rem; border-radius: .25rem; font-size: 1em; overflow-wrap: anywhere; }
+.install-action { margin: 1.5rem 0 1rem; text-align: center; }
+esp-web-install-button { --esp-tools-button-color: #efb36d; --esp-tools-button-text-color: #21180f; }
+button { font: inherit; font-weight: 750; font-size: 1.0625rem; color: #21180f; background: var(--accent); border: 0; border-radius: .55rem; padding: .8rem 2.8rem; min-height: 3rem; cursor: pointer; }
+button:hover { background: #fac88c; }
+:focus-visible { outline: 3px solid #f8d4a6; outline-offset: 4px; }
+.small, footer { font-size: .9rem; color: var(--muted); }
+.notice, #installer-status { color: #f8d4a6; }
+[hidden] { display: none !important; }
+details { border-top: 1px solid var(--line); padding: .85rem 0; }
+summary { cursor: pointer; font-weight: 600; min-height: 1.6rem; }
+details p { color: var(--muted); }
+details p:last-child { margin-bottom: 0; }
+.help { margin: 2.5rem 0; }
+.help h2 { margin-bottom: 1rem; }
+footer { border-top: 1px solid var(--line); padding-top: 1rem; }
+@media (max-width: 480px) {
+  body { padding: 1.75rem 1rem; }
+  .card { padding: 1.25rem; }
+  h1 { font-size: 2rem; }
+  button { width: 100%; }
+}
