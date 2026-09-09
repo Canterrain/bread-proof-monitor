@@ -87,6 +87,18 @@ const RecipePreset kVisibleRecipePresets[] = {
      nullptr,
      nullptr,
      10},
+    {"Pizza and Flatbread", "Sourdough Focaccia", 50, 0, false, 1,
+     {
+         {"Bulk", "handling", "Bowl Fold",
+          "Fold the dough in the bowl, return it under the monitor, then press Complete Step.",
+          25, "Bowl Fold", "Your dough is ready for its bowl fold."},
+         {},
+         {},
+         {},
+     },
+     "https://www.kingarthurbaking.com/recipes/sourdough-focaccia-recipe",
+     "Shape the dough into the pan, then follow the recipe's overnight refrigerated rise "
+     "instead of the monitor."},
     {"Pizza and Flatbread", "Pita", 25, 0, false, 0, {},
      "https://www.kingarthurbaking.com/recipes/golden-pita-bread-recipe",
      "Shape into rounds, then follow the recipe's short rest before baking. The puff "

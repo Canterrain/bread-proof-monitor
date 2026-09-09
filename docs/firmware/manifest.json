@@ -1,6 +1,6 @@
 {
   "name": "Bread Proof Monitor",
-  "version": "0.1.0-preview",
+  "version": "0.1.1-preview",
   "new_install_prompt_erase": true,
   "new_install_improv_wait_time": 0,
   "builds": [

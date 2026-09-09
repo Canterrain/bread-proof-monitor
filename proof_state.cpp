@@ -335,6 +335,16 @@ String statusText(const AppState& state) {
 String nextStepText(const AppState& state) {
   if (state.proofState != ProofState::TargetReached) return "";
 
+  // "Bubbles along the side" is a bulk-fermentation-in-a-container cue, which fits every
+  // Bulk stage here (that's always monitored in some straight-sided vessel). Final proof is
+  // almost always shaped dough in a pan, tray, or sheet instead, viewed from above, so it gets
+  // its own wording rather than reusing a container-specific check that wouldn't apply.
+  if (state.selectedStage == "Final") {
+    return "Check for slight jiggle, slow springback from a gentle poke, and a visibly puffy, "
+           "rounded top. If it looks right, finish this proof. If it needs more time, resume "
+           "monitoring.";
+  }
+
   return "Check for slight jiggle, slow springback from a gentle poke, and visible bubbles along the side. If it looks right, finish this proof. If it needs more time, resume monitoring.";
 }
 
