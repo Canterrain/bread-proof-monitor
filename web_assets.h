@@ -407,6 +407,16 @@ select {
   font-weight: 600;
 }
 
+.topic {
+  margin-top: 8px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid var(--line);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  word-break: break-all;
+}
+
 @media (max-width: 560px) {
   body { padding: 14px; }
   .panel { border-radius: 24px; padding: 16px; }
@@ -675,9 +685,61 @@ function sendAction(path) {
         window.location.reload();
         return null;
       }
+      if (path === '/new-ntfy-topic') {
+        // The new topic isn't part of /data, so an AJAX refresh wouldn't show it; reload
+        // to pick up the freshly rendered topic text from the server.
+        window.location.reload();
+        return null;
+      }
       return updateLiveData();
     })
     .catch((error) => alert(error.message || 'Could not reach Proof Monitor.'));
+}
+
+function legacyCopyTopic(topic, noteEl) {
+  // navigator.clipboard requires a secure context (HTTPS or localhost), which this
+  // page is not served over. This older technique still works over plain HTTP in
+  // most browsers: put the text in a temporary textarea, select it, and use the
+  // deprecated but still-functional execCommand('copy').
+  const textarea = document.createElement('textarea');
+  textarea.value = topic;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
+  document.body.appendChild(textarea);
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+
+  let copied = false;
+  try {
+    copied = document.execCommand('copy');
+  } catch (err) {
+    copied = false;
+  }
+  document.body.removeChild(textarea);
+
+  if (noteEl) {
+    noteEl.textContent = copied
+      ? 'Copied. Paste this topic into the ntfy app.'
+      : 'Automatic copy is not supported on this device. Press and hold the topic above to copy it manually.';
+  }
+}
+
+function copyTopic() {
+  const topicEl = document.getElementById('topicText');
+  const noteEl = document.getElementById('copyNote');
+  const topic = topicEl.textContent;
+
+  if (!navigator.clipboard || !navigator.clipboard.writeText) {
+    legacyCopyTopic(topic, noteEl);
+    return;
+  }
+
+  navigator.clipboard.writeText(topic).then(() => {
+    if (noteEl) noteEl.textContent = 'Copied. Paste this topic into the ntfy app.';
+  }).catch(() => {
+    legacyCopyTopic(topic, noteEl);
+  });
 }
 
 function updateLiveData() {
@@ -823,12 +885,50 @@ function handleResponse(response) {
   });
 }
 
+function legacyCopyTopic(topic, noteEl) {
+  // navigator.clipboard requires a secure context (HTTPS or localhost), which this
+  // page is not served over (the setup AP is plain HTTP). This older technique
+  // still works over plain HTTP in most browsers: put the text in a temporary
+  // textarea, select it, and use the deprecated but still-functional
+  // execCommand('copy').
+  const textarea = document.createElement('textarea');
+  textarea.value = topic;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
+  document.body.appendChild(textarea);
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+
+  let copied = false;
+  try {
+    copied = document.execCommand('copy');
+  } catch (err) {
+    copied = false;
+  }
+  document.body.removeChild(textarea);
+
+  if (noteEl) {
+    noteEl.textContent = copied
+      ? 'Copied. Paste this topic into the ntfy app.'
+      : 'Automatic copy is not supported on this device. Press and hold the topic above to copy it manually.';
+  }
+}
+
 function copyTopic() {
-  const topic = document.getElementById('topicText').textContent;
+  const topicEl = document.getElementById('topicText');
+  const noteEl = document.getElementById('copyNote');
+  const topic = topicEl.textContent;
+
+  if (!navigator.clipboard || !navigator.clipboard.writeText) {
+    legacyCopyTopic(topic, noteEl);
+    return;
+  }
+
   navigator.clipboard.writeText(topic).then(() => {
-    document.getElementById('copyNote').textContent = 'Copied. Paste this topic into the ntfy app.';
+    if (noteEl) noteEl.textContent = 'Copied. Paste this topic into the ntfy app.';
   }).catch(() => {
-    alert('Copy failed. Press and hold the topic to copy it manually.');
+    legacyCopyTopic(topic, noteEl);
   });
 }
 

@@ -322,6 +322,28 @@ String dashboardPage(const AppState& state) {
     </details>
 
     <details>
+      <summary>Phone Alerts</summary>
+      <div class="small">Subscribe to this topic in the ntfy app to get fold reminders and Ready to Shape or Ready to Bake alerts on your phone.</div>
+      <div class="topic" id="topicText">)rawliteral";
+
+  html += htmlEscape(state.ntfyTopic);
+
+  html += R"rawliteral(</div>
+      <button onclick="copyTopic()">Copy Alert Topic</button>
+      <div class="hint" id="copyNote">
+        Install the <strong>ntfy</strong> app, then subscribe to the topic above.<br>
+        You can also open <a href=")rawliteral";
+
+  html += R"rawliteral(https://ntfy.sh/)rawliteral";
+  html += htmlEscape(state.ntfyTopic);
+
+  html += R"rawliteral(" target="_blank">this topic page</a>.<br>
+        The topic is randomly generated and stored only on this ESP32.
+      </div>
+      <button class="secondary" onclick="sendAction('/new-ntfy-topic')">Generate New Alert Topic</button>
+    </details>
+
+    <details>
       <summary>Advanced</summary>
       <div class="small">Developer / testing</div>
       <button class="secondary" onclick="sendAction('/use-calibration-profile')">Use Calibration Test Profile</button>
