@@ -23,6 +23,10 @@ bool proofCanResume(const AppState& state);
 bool proofCanFinish(const AppState& state);
 bool proofCanCompleteEvent(const AppState& state);
 bool proofCanRebaseline(const AppState& state);
+// True exactly when currentStepInstruction() is about to tell the user to go mix or shape
+// dough per the linked recipe (empty setup done, starting height not yet set, not finished,
+// reading not stale) - used to surface a real Open Recipe link alongside that instruction.
+bool proofAwaitingDoughPrep(const AppState& state);
 
 float currentDoughHeightMm(const AppState& state);
 float startingDoughHeightMm(const AppState& state);

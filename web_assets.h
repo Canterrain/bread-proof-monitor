@@ -206,6 +206,22 @@ body {
   line-height: 1.55;
 }
 
+.guidance-block-primary {
+  padding: 12px 14px;
+  background: var(--accent-soft);
+  border-radius: 16px;
+  border-bottom: 0;
+}
+
+.guidance-block-primary .eyebrow {
+  color: var(--accent);
+}
+
+.guidance-copy-primary {
+  font-size: 17px;
+  font-weight: 600;
+}
+
 .event-action {
   margin-top: 14px;
 }
@@ -246,6 +262,15 @@ select {
   border: 0;
   border-radius: 16px;
   font: inherit;
+}
+
+.button-like {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 16px;
+  text-align: center;
+  text-decoration: none;
 }
 
 button,
@@ -588,6 +613,22 @@ function updateRecipeLink(profileName) {
   }
 }
 
+function updateOpenRecipeLink(profileName, needsDoughPrepLink) {
+  const openRecipeWrap = document.getElementById('openRecipeWrap');
+  const openRecipeLink = document.getElementById('openRecipeLink');
+  if (!openRecipeWrap || !openRecipeLink) return;
+
+  const found = findPresetByName(profileName);
+  const preset = found.preset;
+
+  if (needsDoughPrepLink && preset && preset.sourceUrl) {
+    openRecipeLink.href = preset.sourceUrl;
+    openRecipeWrap.style.display = 'block';
+  } else {
+    openRecipeWrap.style.display = 'none';
+  }
+}
+
 function recipeLinkCaptionFor(preset) {
   if (preset.hasFinal) {
     return 'Follow the recipe for mixing and shaping. Use this monitor for both proofing stages.';
@@ -609,6 +650,7 @@ function applyLiveData(data) {
   setText('profileValue', data.profile);
   setText('stageValue', data.stage);
   updateRecipeLink(data.profile);
+  updateOpenRecipeLink(data.profile, data.needsDoughPrepLink);
   setText('targetValue', data.target + '%');
   setText('distanceValue', data.distance + ' mm');
   setText('currentHeightValue', data.currentHeight + ' mm');
@@ -619,9 +661,11 @@ function applyLiveData(data) {
   setText('nextStepValue', data.upcomingStep || 'No further proof steps.');
   const completeStepWrap = document.getElementById('completeStepWrap');
   if (completeStepWrap) completeStepWrap.style.display = data.canCompleteStep ? 'block' : 'none';
+  const chooseProfileWrap = document.getElementById('chooseProfileWrap');
+  if (chooseProfileWrap) chooseProfileWrap.style.display = data.showProfilePicker ? 'block' : 'none';
 
   const profileMeta = data.showProfilePicker
-    ? 'Choose a proof profile or adjust the target before you start.'
+    ? 'Choose your bake or adjust the target before you start.'
     : data.stage + ' / Target ' + data.target + '%';
   setText('proofMetaValue', profileMeta);
 
@@ -652,6 +696,13 @@ function rateOutcome(rating) {
     .then(handleResponse)
     .then(() => { window.location.reload(); })
     .catch((error) => alert(error.message || 'Could not reach Proof Monitor.'));
+}
+
+function openProfilePicker() {
+  const details = document.getElementById('profileDetails');
+  if (!details) return;
+  details.setAttribute('open', '');
+  details.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function applyProfileTarget() {

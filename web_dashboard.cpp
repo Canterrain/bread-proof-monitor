@@ -49,6 +49,7 @@ String liveDataJson(const AppState& state) {
   json += "\"upcomingStep\":\"" + jsonEscape(upcomingStepText(state)) + "\",";
   json += "\"nextStep\":\"" + jsonEscape(nextStepText(state)) + "\",";
   json += "\"showProfilePicker\":" + String(jsonBool(!state.recipeConfigured)) + ",";
+  json += "\"needsDoughPrepLink\":" + String(jsonBool(proofAwaitingDoughPrep(state))) + ",";
   json += "\"canCompleteStep\":" + String(jsonBool(proofCanCompleteEvent(state))) + ",";
   json += "\"hasEmptySetup\":" + String(jsonBool(proofHasEmptyCalibration(state))) + ",";
   json += "\"distanceReadingStale\":" + String(jsonBool(proofDistanceReadingStale(state))) + ",";
@@ -149,7 +150,7 @@ String dashboardPage(const AppState& state) {
     html += String(state.targetRisePercent, 0);
     html += "%";
   } else {
-    html += "Choose a proof profile or adjust the target before you start.";
+    html += "Choose your bake or adjust the target before you start.";
   }
 
   html += R"rawliteral(</div>
@@ -205,13 +206,26 @@ String dashboardPage(const AppState& state) {
 
   html += R"rawliteral(</div>
       </div>
-      <div class="guidance-block">
+      <div class="guidance-block guidance-block-primary">
         <div class="eyebrow">What to do now</div>
-        <div class="guidance-copy" id="instructionValue">)rawliteral";
+        <div class="guidance-copy guidance-copy-primary" id="instructionValue">)rawliteral";
 
   html += htmlEscape(currentStepInstruction(state));
 
   html += R"rawliteral(</div>
+        <div class="event-action" id="openRecipeWrap")rawliteral";
+
+  if (!(proofAwaitingDoughPrep(state) && hasSourceUrl)) {
+    html += " style=\"display:none\"";
+  }
+
+  html += R"rawliteral(>
+          <a id="openRecipeLink" class="button-like" href=")rawliteral";
+
+  html += hasSourceUrl ? htmlEscape(selectedPreset.sourceUrl) : "#";
+
+  html += R"rawliteral(" target="_blank" rel="noopener">Open Recipe &#8599;</a>
+        </div>
         <div class="event-action" id="completeStepWrap")rawliteral";
 
   if (!proofCanCompleteEvent(state)) {
@@ -230,6 +244,15 @@ String dashboardPage(const AppState& state) {
   html += htmlEscape(upcomingStep.length() > 0 ? upcomingStep : "No further proof steps.");
 
   html += R"rawliteral(</div>
+        <div class="event-action" id="chooseProfileWrap")rawliteral";
+
+  if (state.recipeConfigured) {
+    html += " style=\"display:none\"";
+  }
+
+  html += R"rawliteral(>
+          <button id="chooseProfileButton" onclick="openProfilePicker()">Choose Your Bake</button>
+        </div>
       </div>
     </div>
 
@@ -252,17 +275,17 @@ String dashboardPage(const AppState& state) {
     <details id="profileDetails" class="editor-details">
       <summary class="editor-summary">
         <div class="editor-summary-copy">
-          <span class="editor-summary-title">Edit Proof Profile</span>
-          <span class="editor-summary-hint">Change profile, stage, or target</span>
+          <span class="editor-summary-title">Choose Your Bake</span>
+          <span class="editor-summary-hint">Change bake, stage, or target</span>
         </div>
         <span class="editor-summary-icon" aria-hidden="true">▾</span>
       </summary>
       <div class="stack">
-        <div class="small">Proof Profile Target<br>These are suggested starting points. Adjust based on your dough and results.</div>
+        <div class="small">These are suggested starting points. Adjust based on your dough and results.</div>
         <label>Category
           <select id="categorySelect" onchange="populateProfiles()"></select>
         </label>
-        <label>Proof Profile
+        <label>Bake Type
           <select id="profileSelect" onchange="updatePresetTarget()"></select>
         </label>
         <label>Proof Stage
@@ -278,7 +301,7 @@ String dashboardPage(const AppState& state) {
 
   html += R"rawliteral(">
         </label>
-        <button onclick="applyProfileTarget()">Apply Proof Profile Target</button>
+        <button onclick="applyProfileTarget()">Set This Bake</button>
       </div>
     </details>
 

@@ -156,12 +156,16 @@ void clearActiveProofRun(AppState& state) {
 }
 
 String nextMilestoneText(const AppState& state) {
+  // Checked before the fold preview below: Start New Proof re-primes pendingEventIndex to the
+  // previous recipe's first fold before recipeConfigured is cleared, which would otherwise
+  // preview a stale fold from a proof that hasn't been chosen again yet.
+  if (!state.recipeConfigured) return "Choose your bake, then set empty setup and starting dough height.";
+
   const ActiveFermentationEventStatus eventStatus = currentFermentationEvent(state);
   if (eventStatus.exists && !eventStatus.due) {
     return String("Next: ") + eventStatus.event.title + " at " + String(eventStatus.event.triggerRisePercent) + "%";
   }
 
-  if (!state.recipeConfigured) return "Apply a proof profile target, then set empty setup and starting dough height.";
   if (state.selectedStage == "Bulk") {
     return String("Next: Ready to Shape at ") + String(state.targetRisePercent, 0) + "%";
   }
@@ -221,6 +225,14 @@ bool proofCanRebaseline(const AppState& state) {
          state.proofState != ProofState::Paused &&
          state.proofState != ProofState::Finished &&
          !proofDistanceReadingStale(state);
+}
+
+bool proofAwaitingDoughPrep(const AppState& state) {
+  return state.recipeConfigured &&
+         state.proofState != ProofState::Finished &&
+         !proofDistanceReadingStale(state) &&
+         proofHasEmptyCalibration(state) &&
+         !proofHasStartingHeight(state);
 }
 
 float currentDoughHeightMm(const AppState& state) {
@@ -317,7 +329,7 @@ String statusText(const AppState& state) {
   if (proofDistanceReadingStale(state)) {
     return state.pendingEventActive ? "Settling after fold" : "Distance reading unstable";
   }
-  if (!state.recipeConfigured) return "Choose proof profile";
+  if (!state.recipeConfigured) return "Choose Your Bake";
   if (state.awaitingFinalProofStart) return "Bulk proof complete";
   if (!proofHasEmptyCalibration(state)) return "Set empty setup";
   if (!proofHasStartingHeight(state)) return "Set starting dough height";
@@ -357,7 +369,7 @@ String phoneAlertText(const AppState& state) {
 }
 
 String currentStepTitle(const AppState& state) {
-  if (!state.recipeConfigured) return "Choose proof profile";
+  if (!state.recipeConfigured) return "Choose Your Bake";
   if (state.awaitingFinalProofStart) return "Bulk proof complete";
   if (!proofHasEmptyCalibration(state)) return "Set empty setup";
   if (!proofHasStartingHeight(state)) return "Set starting dough height";
@@ -370,19 +382,20 @@ String currentStepTitle(const AppState& state) {
 }
 
 String currentStepInstruction(const AppState& state) {
-  if (!state.recipeConfigured) {
-    return "Choose a Proof Profile Target or adjust a custom target before you start monitoring.";
-  }
-
-  // Finished stops sensor reads entirely (like Paused), so a stale reading at this point is
-  // permanent, not transient. Show the actual finished-proof guidance instead of getting
-  // stuck forever on the generic staleness message below.
+  // Checked before the "choose a bake" branch below: a just-finished proof clears
+  // recipeConfigured so Current Step reads "Choose Your Bake" again, but the dough from
+  // that finished proof may still need a physical next step (shape, refrigerate, bake). Show
+  // that instead of jumping straight to "choose a bake" and losing it.
   if (state.proofState == ProofState::Finished) {
     RecipePreset preset;
     if (loadSelectedPreset(state, preset) && preset.untrackedFinalNote != nullptr) {
       return String(preset.untrackedFinalNote);
     }
     return "This proof is complete. Start a new proof when you are ready to monitor another batch.";
+  }
+
+  if (!state.recipeConfigured) {
+    return "Choose your bake or adjust a custom target before you start monitoring.";
   }
 
   if (proofDistanceReadingStale(state)) {
@@ -401,20 +414,40 @@ String currentStepInstruction(const AppState& state) {
   }
 
   if (state.awaitingFinalProofStart) {
+    RecipePreset finalPreset;
+    if (loadSelectedPreset(state, finalPreset) && finalPreset.sourceUrl != nullptr) {
+      return "Bulk proof complete. Follow the linked recipe to shape your dough, then place "
+             "the monitor over it and press Set Starting Dough Height to begin final proof.";
+    }
     return "Bulk proof complete. Shape your dough, place the monitor over the shaped dough, then press Set Starting Dough Height to begin final proof.";
   }
 
   if (!proofHasStartingHeight(state)) {
+    RecipePreset preset;
+    const bool hasPreset = loadSelectedPreset(state, preset);
+    const bool hasRecipe = hasPreset && preset.sourceUrl != nullptr;
+
     if (state.selectedStage == "Final") {
+      if (hasRecipe) {
+        return "Follow the linked recipe to shape your dough, then place the monitor over "
+               "it, let it settle for a moment, and press Set Starting Dough Height.";
+      }
       return "Place the monitor over the shaped dough, let it settle for a moment, then "
              "press Set Starting Dough Height.";
     }
-    RecipePreset preset;
-    if (loadSelectedPreset(state, preset) && preset.premixNote != nullptr) {
+
+    if (hasPreset && preset.premixNote != nullptr) {
       return String(preset.premixNote) +
              " Then, for bulk rise, place the dough in the proof container, smooth the "
              "top, let the lid settle for a moment, and press Set Starting Dough Height.";
     }
+
+    if (hasRecipe) {
+      return "Follow the linked recipe to mix and shape your dough, then place it in the "
+             "proof container, smooth the top, let the lid settle for a moment, and press "
+             "Set Starting Dough Height.";
+    }
+
     return "Place the dough in the proof container, smooth the top, let the lid settle "
            "for a moment, then press Set Starting Dough Height.";
   }
@@ -444,6 +477,10 @@ String currentStepInstruction(const AppState& state) {
 }
 
 String upcomingStepText(const AppState& state) {
+  // recipeConfigured is checked first so a just-finished proof (which clears it) surfaces
+  // "choose your bake" here as the real next step, alongside the Choose Your Bake button.
+  // The Bulk-to-Final continuation keeps recipeConfigured true throughout, so it still falls
+  // through to the Finished check below and shows no stale next-step text.
   if (!state.recipeConfigured) return nextMilestoneText(state);
   if (state.proofState == ProofState::Finished) return "";
   if (proofDistanceReadingStale(state)) {
@@ -628,6 +665,10 @@ void finishProof(AppState& state) {
   RecipePreset preset;
   if (!canPrepareFinalProof(state, preset)) {
     queuePendingOutcome(state, state.selectedRecipe, state.selectedStage);
+    // Nothing further to monitor for this recipe. Drop back to "no proof selected" so the
+    // next bake starts from Choose Your Bake rather than stranding the user on a stale
+    // finished screen for the recipe they just baked.
+    state.recipeConfigured = false;
     return;
   }
 
@@ -647,6 +688,10 @@ void startNewProof(AppState& state) {
   clearActiveProofRunForStage(state, false);
   resetFermentationEventState(state);
   state.awaitingFinalProofStart = false;
+  // Back to "no proof selected" so Choose Your Bake is the prominent next step, even
+  // though the recipe, stage, and target stay put underneath so the picker still opens
+  // pre-filled with what was just used.
+  state.recipeConfigured = false;
 }
 
 void updateProofStateFromRise(AppState& state) {
