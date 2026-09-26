@@ -59,6 +59,9 @@ constexpr float kMaxTemperatureRiseScale = 2.5f;
 
 float temperatureRiseScale(const AppState& state) {
   if (!state.shtReady) return 1.0f;
+  // Commercial-yeast recipes target a fixed rise ("until doubled") regardless of temperature -
+  // only starter-leavened ones get this adjustment. See recipeUsesTemperatureScaledTarget().
+  if (!recipeUsesTemperatureScaledTarget(state.selectedRecipe)) return 1.0f;
 
   float scale = powf(2.0f, (state.temperatureF - kReferenceTempF) / kTargetDoublingSpanF);
   if (scale < kMinTemperatureRiseScale) scale = kMinTemperatureRiseScale;
@@ -133,6 +136,22 @@ float rawOverallProgressPercent(const AppState& state) {
                                        ? state.segmentBaselineDistanceMm
                                        : state.startDistanceMm;
   const float segmentRise = risePercentFromDistances(state, baselineDistanceMm, state.smoothedDistanceMm);
+  return state.completedProgressOffsetPercent + segmentRise;
+}
+
+// Same as rawOverallProgressPercent(), but against this tick's fresh, unsmoothed reading rather
+// than smoothedDistanceMm. Used only for peak-candidate confirmation below: the EMA blend in
+// readSensors() can keep a single bad tick visibly elevated for tens of seconds while it decays
+// back out, which is long enough to satisfy the 8-second confirm window on its own. Each tick's
+// median-of-5 read is independent of the others, so a transient error here reverts on the very
+// next tick instead of smearing across several.
+float instantRawProgressPercent(const AppState& state) {
+  if (!proofHasStartingHeight(state)) return 0.0f;
+
+  const float baselineDistanceMm = state.segmentBaselineDistanceMm > 0.0f
+                                       ? state.segmentBaselineDistanceMm
+                                       : state.startDistanceMm;
+  const float segmentRise = risePercentFromDistances(state, baselineDistanceMm, state.lastRawDistanceMm);
   return state.completedProgressOffsetPercent + segmentRise;
 }
 
@@ -760,12 +779,14 @@ void updateProofStateFromRise(AppState& state) {
   if (state.proofState != ProofState::Running && state.proofState != ProofState::TargetReached) return;
   if (!riseInputsReady(state)) return;
   if (proofDistanceReadingStale(state)) return;
-  const float rawProgress = rawOverallProgressPercent(state);
-  if (rawProgress > state.peakProgressPercent) {
+  // Confirmation is checked against this tick's own instant reading, not the smoothed display
+  // value - see instantRawProgressPercent() for why.
+  const float instantProgress = instantRawProgressPercent(state);
+  if (instantProgress > state.peakProgressPercent) {
     if (state.peakCandidateSinceMillis == 0) {
       state.peakCandidateSinceMillis = millis();
     } else if (millis() - state.peakCandidateSinceMillis >= kPeakConfirmMs) {
-      state.peakProgressPercent = rawProgress;
+      state.peakProgressPercent = instantProgress;
     }
   } else {
     state.peakCandidateSinceMillis = 0;

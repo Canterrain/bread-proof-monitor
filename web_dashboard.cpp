@@ -136,7 +136,11 @@ String dashboardPage(const AppState& state) {
 
     <div class="proof-card">
       <div>
-        <div class="eyebrow">Current Proof</div>
+        <div class="eyebrow" id="proofCardEyebrow">)rawliteral";
+
+  html += state.recipeConfigured ? "Current Proof" : "Last Bake";
+
+  html += R"rawliteral(</div>
         <h2 class="proof-title" id="profileValue">)rawliteral";
 
   html += htmlEscape(state.selectedRecipe);
@@ -183,7 +187,13 @@ String dashboardPage(const AppState& state) {
   html += R"rawliteral(</span>
         </div>
       </div>
-      <div class="target-badge">
+      <div class="target-badge" id="targetBadge")rawliteral";
+
+  if (!state.recipeConfigured) {
+    html += " style=\"display:none\"";
+  }
+
+  html += R"rawliteral(>
         <span class="small" id="stageValue">)rawliteral";
 
   html += htmlEscape(state.selectedStage);

@@ -717,6 +717,9 @@ function applyLiveData(data) {
     ? 'Choose your bake or adjust the target before you start.'
     : data.stage + ' / Target ' + data.target + '%';
   setText('proofMetaValue', profileMeta);
+  setText('proofCardEyebrow', data.showProfilePicker ? 'Last Bake' : 'Current Proof');
+  const targetBadge = document.getElementById('targetBadge');
+  if (targetBadge) targetBadge.style.display = data.showProfilePicker ? 'none' : 'block';
 
   updateSetEmptyUi(data);
   updateSetStartUi(data);

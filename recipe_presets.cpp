@@ -300,3 +300,20 @@ bool profileRequiresStageSetupReset(const String& name) {
          normalizedName == "Hoagie Rolls" ||
          normalizedName == "Kaiser Rolls";
 }
+
+bool recipeUsesTemperatureScaledTarget(const String& name) {
+  const String normalizedName = normalizeProfileName(name);
+
+  // Every starter-leavened recipe in the table, including three whose plain display name
+  // doesn't say "Sourdough" at all (Baguettes, Cinnamon Rolls, Hamburger Buns are all sourdough
+  // recipes under the hood - check their sourceUrl above before assuming from the name).
+  return normalizedName == "Sourdough Sandwich Bread" ||
+         normalizedName == "Rustic Sourdough" ||
+         normalizedName == "No-Knead Sourdough Bread" ||
+         normalizedName == "Baguettes" ||
+         normalizedName == "Sourdough Pizza Crust" ||
+         normalizedName == "Sourdough Focaccia" ||
+         normalizedName == "Sourdough Bagels" ||
+         normalizedName == "Cinnamon Rolls" ||
+         normalizedName == "Hamburger Buns";
+}

@@ -55,6 +55,11 @@ struct AppState {
   float peakProgressPercent = 0.0f;
   float targetRisePercent = 75.0f;
   float smoothedDistanceMm = 0.0f;
+  // The fresh median-of-5 reading from the most recent tick, before it's blended into
+  // smoothedDistanceMm. Used only for peak-candidate confirmation, so a single bad tick can't
+  // get smeared across many seconds of EMA smoothing and accidentally outlast the confirm
+  // window - see updateProofStateFromRise() in proof_state.cpp.
+  float lastRawDistanceMm = 0.0f;
   float temperatureF = 0.0f;
   float humidityPercent = 0.0f;
   float finalRisePercent = 0.0f;

@@ -39,3 +39,8 @@ String normalizeProfileName(const String& name);
 bool findRecipePreset(const String& name, RecipePreset& preset);
 String proofProfilesJson();
 bool profileRequiresStageSetupReset(const String& name);
+// True for starter-leavened recipes, where published bulk-fermentation guidance ties the right
+// rise target to dough temperature. Commercial-yeast recipes are excluded even when their bulk
+// stage runs warm, since their own instructions target a fixed rise (e.g. "until doubled") and
+// expect only the *time* to get there to vary with temperature, not the target itself.
+bool recipeUsesTemperatureScaledTarget(const String& name);

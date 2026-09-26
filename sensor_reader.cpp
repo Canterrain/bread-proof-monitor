@@ -13,7 +13,11 @@ constexpr unsigned long kDistanceStaleAfterMs = 15000;
 float readDistanceMm() {
   VL53L0X_RangingMeasurementData_t measure;
   gLox.rangingTest(&measure, false);
-  if (measure.RangeStatus != 4) return measure.RangeMilliMeter;
+  // Per this library's own vl53l0x_api_strings.cpp: 0 = Range Valid, and every other code is a
+  // named failure (1 Sigma, 2 Signal, 3 Min Range, 4 Phase, 5 Hardware). Only 4 (out of range)
+  // was excluded before, which let the other four failure modes' garbage data through as long
+  // as it happened to fall in a plausible-looking distance range.
+  if (measure.RangeStatus == 0) return measure.RangeMilliMeter;
   return -1.0f;
 }
 
@@ -55,6 +59,11 @@ float medianDistance(float* values, uint8_t count) {
 constexpr uint8_t kSamplesNeeded = 5;
 constexpr uint8_t kMaxAttempts = 10;
 constexpr unsigned long kSampleDelayMs = 35;
+// Five valid samples aren't necessarily five *agreeing* samples - a surface still settling (or
+// noisy readings that individually pass range/status checks) can produce a "successful" median
+// that doesn't reflect anything real. Reject a batch whose spread is too wide to trust, the same
+// way a failed capture is already rejected, rather than silently accepting it.
+constexpr float kMaxStableSpreadMm = 5.0f;
 
 bool readMedianDistanceMm(float& distanceMm) {
   float samples[kSamplesNeeded] = {};
@@ -69,6 +78,14 @@ bool readMedianDistanceMm(float& distanceMm) {
   }
 
   if (count < kSamplesNeeded) return false;
+
+  float minSample = samples[0];
+  float maxSample = samples[0];
+  for (uint8_t i = 1; i < count; ++i) {
+    if (samples[i] < minSample) minSample = samples[i];
+    if (samples[i] > maxSample) maxSample = samples[i];
+  }
+  if (maxSample - minSample > kMaxStableSpreadMm) return false;
 
   distanceMm = medianDistance(samples, count);
   return true;
@@ -85,6 +102,7 @@ void readSensors(AppState& state) {
     float distance = 0.0f;
     if (readMedianDistanceMm(distance)) {
       state.lastValidDistanceAtMillis = millis();
+      state.lastRawDistanceMm = distance;
       if (state.smoothedDistanceMm == 0.0f) {
         state.smoothedDistanceMm = distance;
       } else {
@@ -109,6 +127,7 @@ bool captureStableDistanceMm(AppState& state, float& distanceMm) {
   if (!readMedianDistanceMm(distanceMm)) return false;
 
   state.smoothedDistanceMm = distanceMm;
+  state.lastRawDistanceMm = distanceMm;
   state.lastValidDistanceAtMillis = millis();
   return true;
 }
