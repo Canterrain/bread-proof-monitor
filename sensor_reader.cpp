@@ -47,6 +47,32 @@ float medianDistance(float* values, uint8_t count) {
 
   return values[count / 2];
 }
+
+// Shared by every distance read, live tick or one-shot capture, so the two paths can't drift
+// apart in reliability again: a dough surface is a harder target for this sensor than an empty
+// container wall (uneven, inconsistent reflectivity), and 5 samples with retries rejects a bad
+// read far more reliably than a quick, no-retry 3-sample pass would.
+constexpr uint8_t kSamplesNeeded = 5;
+constexpr uint8_t kMaxAttempts = 10;
+constexpr unsigned long kSampleDelayMs = 35;
+
+bool readMedianDistanceMm(float& distanceMm) {
+  float samples[kSamplesNeeded] = {};
+  uint8_t count = 0;
+
+  for (uint8_t attempt = 0; attempt < kMaxAttempts && count < kSamplesNeeded; ++attempt) {
+    float sample = 0.0f;
+    if (readValidDistanceSample(sample)) {
+      samples[count++] = sample;
+    }
+    delay(kSampleDelayMs);
+  }
+
+  if (count < kSamplesNeeded) return false;
+
+  distanceMm = medianDistance(samples, count);
+  return true;
+}
 }  // namespace
 
 void beginSensors(AppState& state) {
@@ -56,23 +82,8 @@ void beginSensors(AppState& state) {
 
 void readSensors(AppState& state) {
   if (shouldReadDistance(state)) {
-    // Take a few raw reads and use the median before smoothing. At this sensor's typical
-    // standoff distance (well over a foot, long range for a VL53L0X) individual reads are
-    // noisier and lower-confidence, so a single bad sample can still slip past the loose
-    // RangeStatus filter below. Requiring at least two of three reads to agree rejects a
-    // lone outlier outright, instead of just partially blending it into the average.
-    constexpr uint8_t kSamplesPerTick = 3;
-    float samples[kSamplesPerTick] = {};
-    uint8_t count = 0;
-    for (uint8_t i = 0; i < kSamplesPerTick; ++i) {
-      float sample = 0.0f;
-      if (readValidDistanceSample(sample)) {
-        samples[count++] = sample;
-      }
-    }
-
-    if (count > 0) {
-      const float distance = medianDistance(samples, count);
+    float distance = 0.0f;
+    if (readMedianDistanceMm(distance)) {
       state.lastValidDistanceAtMillis = millis();
       if (state.smoothedDistanceMm == 0.0f) {
         state.smoothedDistanceMm = distance;
@@ -95,23 +106,8 @@ void readSensors(AppState& state) {
 
 bool captureStableDistanceMm(AppState& state, float& distanceMm) {
   if (!state.loxReady) return false;
+  if (!readMedianDistanceMm(distanceMm)) return false;
 
-  constexpr uint8_t kSamplesNeeded = 5;
-  constexpr uint8_t kMaxAttempts = 10;
-  float samples[kSamplesNeeded] = {};
-  uint8_t count = 0;
-
-  for (uint8_t attempt = 0; attempt < kMaxAttempts && count < kSamplesNeeded; ++attempt) {
-    float sample = 0.0f;
-    if (readValidDistanceSample(sample)) {
-      samples[count++] = sample;
-    }
-    delay(35);
-  }
-
-  if (count < kSamplesNeeded) return false;
-
-  distanceMm = medianDistance(samples, count);
   state.smoothedDistanceMm = distanceMm;
   state.lastValidDistanceAtMillis = millis();
   return true;

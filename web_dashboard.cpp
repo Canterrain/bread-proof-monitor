@@ -269,6 +269,7 @@ String dashboardPage(const AppState& state) {
         <button class="secondary" onclick="rateOutcome('under')">Underproofed</button>
         <button onclick="rateOutcome('good')">Just Right</button>
         <button class="secondary" onclick="rateOutcome('over')">Overproofed</button>
+        <button class="ghost" onclick="skipOutcome()">Skip</button>
       </div>
     </div>
 
@@ -316,7 +317,9 @@ String dashboardPage(const AppState& state) {
       <button class="danger" onclick="sendAction('/reset-proof')">Start New Proof</button>
     </div>
     <div class="action-feedback" id="setEmptyFeedback">Set this before measuring dough rise in a new setup.</div>
+    <div class="action-feedback" id="setStartFeedback"></div>
     <div class="action-feedback">Pause Monitoring before lifting the lid for any reason. Use Re-baseline afterward if it wasn't a scripted fold step, so a shift on set-down isn't read as rise.</div>
+    <div class="action-feedback" id="rebaselineFeedback"></div>
 
     <details>
       <summary>Details</summary>
@@ -537,6 +540,9 @@ void handleSetProfileTarget() {
     clearActiveProofRunForStage(*gState, true);
   }
   resetFermentationEventState(*gState);
+  // A rating for whatever was pending before this bake was chosen isn't useful feedback this
+  // far removed from it, and the recipe/stage it would have nudged gets another chance later.
+  clearAllPendingOutcomes(*gState);
   reconcileProofStateWithTarget();
   persistState();
   gServer->send(200, "text/plain", "OK");
@@ -674,18 +680,18 @@ void handleRateOutcome() {
 
   recordOutcome(gState->outcomeRecipe, gState->outcomeStage, shippedDefault, parsed);
 
-  if (gState->outcomeFeedbackPendingNext) {
-    gState->outcomeFeedbackPending = true;
-    gState->outcomeRecipe = gState->outcomeRecipeNext;
-    gState->outcomeStage = gState->outcomeStageNext;
-    gState->outcomeFeedbackPendingNext = false;
-    gState->outcomeRecipeNext = "";
-    gState->outcomeStageNext = "";
-  } else {
-    gState->outcomeFeedbackPending = false;
-    gState->outcomeRecipe = "";
-    gState->outcomeStage = "";
+  advanceOutcomeQueue(*gState);
+  persistState();
+  gServer->send(200, "text/plain", "OK");
+}
+
+void handleSkipOutcome() {
+  if (!gState->outcomeFeedbackPending) {
+    gServer->send(409, "text/plain", "No outcome is pending.");
+    return;
   }
+
+  advanceOutcomeQueue(*gState);
   persistState();
   gServer->send(200, "text/plain", "OK");
 }
@@ -732,6 +738,7 @@ void configureWebServer(WebServer& server, Preferences& prefs, AppState& state) 
   server.on("/complete-event", HTTP_POST, handleCompleteEvent);
   server.on("/rebaseline", HTTP_POST, handleRebaseline);
   server.on("/rate-outcome", HTTP_POST, handleRateOutcome);
+  server.on("/skip-outcome", HTTP_POST, handleSkipOutcome);
   server.on("/reset-learned-targets", HTTP_POST, handleResetLearnedTargets);
   server.on("/reset-proof", HTTP_POST, handleResetProof);
   server.on("/use-calibration-profile", HTTP_POST, handleUseCalibrationProfile);

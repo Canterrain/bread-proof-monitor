@@ -47,6 +47,38 @@ unsigned long requiredSegmentFloorSeconds(const AppState& state) {
   return scaledSeconds;
 }
 
+// Published sourdough bulk-fermentation guidance ties the right rise target to dough
+// temperature much more steeply than the confirm-window floor above does - roughly a halving
+// every 6F around the same 75F reference, versus that floor's gentler 18F-doubling - because
+// warm dough needs to be caught earlier to avoid overproofing, not just trusted sooner once
+// crossed. Clamped to a 0.5-2.5x range so a stale or extreme reading can't send the live
+// target somewhere implausible.
+constexpr float kTargetDoublingSpanF = 6.0f;
+constexpr float kMinTemperatureRiseScale = 0.5f;
+constexpr float kMaxTemperatureRiseScale = 2.5f;
+
+float temperatureRiseScale(const AppState& state) {
+  if (!state.shtReady) return 1.0f;
+
+  float scale = powf(2.0f, (state.temperatureF - kReferenceTempF) / kTargetDoublingSpanF);
+  if (scale < kMinTemperatureRiseScale) scale = kMinTemperatureRiseScale;
+  if (scale > kMaxTemperatureRiseScale) scale = kMaxTemperatureRiseScale;
+  return scale;
+}
+
+// The live, temperature-adjusted version of state.targetRisePercent (itself the shipped or
+// learned reference value) - what "done" actually means right now, not just at a 75F reference.
+float liveTargetRisePercent(const AppState& state) {
+  return state.targetRisePercent / temperatureRiseScale(state);
+}
+
+// Scales a fold's authored trigger by the same factor as the target above, so it stays at the
+// same fraction of the way to target it was authored at (e.g. "a third of the way there"),
+// just shifted to match tonight's actual temperature instead of the recipe's reference one.
+float liveTriggerRisePercent(const AppState& state, uint8_t authoredTriggerPercent) {
+  return static_cast<float>(authoredTriggerPercent) / temperatureRiseScale(state);
+}
+
 bool stageMatches(const FermentationEvent& event, const String& stage) {
   return event.stage != nullptr && stage == event.stage;
 }
@@ -163,14 +195,15 @@ String nextMilestoneText(const AppState& state) {
 
   const ActiveFermentationEventStatus eventStatus = currentFermentationEvent(state);
   if (eventStatus.exists && !eventStatus.due) {
-    return String("Next: ") + eventStatus.event.title + " at " + String(eventStatus.event.triggerRisePercent) + "%";
+    return String("Next: ") + eventStatus.event.title + " at " +
+           String(liveTriggerRisePercent(state, eventStatus.event.triggerRisePercent), 0) + "%";
   }
 
   if (state.selectedStage == "Bulk") {
-    return String("Next: Ready to Shape at ") + String(state.targetRisePercent, 0) + "%";
+    return String("Next: Ready to Shape at ") + String(liveTargetRisePercent(state), 0) + "%";
   }
 
-  return String("Next: Ready to Bake at ") + String(state.targetRisePercent, 0) + "%";
+  return String("Next: Ready to Bake at ") + String(liveTargetRisePercent(state), 0) + "%";
 }
 }  // namespace
 
@@ -338,9 +371,10 @@ String statusText(const AppState& state) {
   if (state.proofState == ProofState::TargetReached) return "Target reached";
 
   const float rise = overallProgressPercent(state);
-  if (rise >= state.targetRisePercent) return "Confirming target reached";
+  const float liveTarget = liveTargetRisePercent(state);
+  if (rise >= liveTarget) return "Confirming target reached";
   if (rise < 10.0f) return "Just getting started";
-  if (rise < state.targetRisePercent * 0.75f) return "Rising";
+  if (rise < liveTarget * 0.75f) return "Rising";
   return "Getting close";
 }
 
@@ -467,7 +501,7 @@ String currentStepInstruction(const AppState& state) {
     return nextStepText(state);
   }
 
-  if (overallProgressPercent(state) >= state.targetRisePercent) {
+  if (overallProgressPercent(state) >= liveTargetRisePercent(state)) {
     return "The reading has hit your target already, but the app waits a bit longer at "
            "this temperature before trusting it, in case it was a brief spike rather than "
            "real rise. No action needed, this resolves on its own shortly.";
@@ -488,7 +522,7 @@ String upcomingStepText(const AppState& state) {
                                      : "Wait for stable live distance readings.";
   }
   if (!proofHasEmptyCalibration(state)) return "Set starting dough height.";
-  if (state.awaitingFinalProofStart) return String("Next: Ready to Bake at ") + String(state.targetRisePercent, 0) + "%";
+  if (state.awaitingFinalProofStart) return String("Next: Ready to Bake at ") + String(liveTargetRisePercent(state), 0) + "%";
   if (!proofHasStartingHeight(state)) return nextMilestoneText(state);
   const ActiveFermentationEventStatus eventStatus = currentFermentationEvent(state);
   if (eventStatus.exists && eventStatus.due) {
@@ -496,12 +530,13 @@ String upcomingStepText(const AppState& state) {
     if (loadSelectedPreset(state, preset)) {
       const int8_t nextIndex = nextEventIndexForStage(preset, state.selectedStage, eventStatus.index);
       if (nextIndex >= 0) {
-        return String("Next: ") + preset.events[nextIndex].title + " at " + String(preset.events[nextIndex].triggerRisePercent) + "%";
+        return String("Next: ") + preset.events[nextIndex].title + " at " +
+               String(liveTriggerRisePercent(state, preset.events[nextIndex].triggerRisePercent), 0) + "%";
       }
     }
     return state.selectedStage == "Bulk"
-               ? String("Next: Ready to Shape at ") + String(state.targetRisePercent, 0) + "%"
-               : String("Next: Ready to Bake at ") + String(state.targetRisePercent, 0) + "%";
+               ? String("Next: Ready to Shape at ") + String(liveTargetRisePercent(state), 0) + "%"
+               : String("Next: Ready to Bake at ") + String(liveTargetRisePercent(state), 0) + "%";
   }
   if (state.proofState == ProofState::TargetReached) return "Finish Proof when the dough looks ready.";
   return nextMilestoneText(state);
@@ -528,7 +563,7 @@ ActiveFermentationEventStatus currentFermentationEvent(const AppState& state) {
                               !state.awaitingFinalProofStart &&
                               state.proofState != ProofState::Finished &&
                               currentSegmentElapsedSeconds(state) >= requiredSegmentFloorSeconds(state) &&
-                              state.peakProgressPercent >= status.event.triggerRisePercent;
+                              state.peakProgressPercent >= liveTriggerRisePercent(state, status.event.triggerRisePercent);
   status.due = state.pendingEventActive || crossedTrigger;
   return status;
 }
@@ -652,6 +687,30 @@ void queuePendingOutcome(AppState& state, const String& recipe, const String& st
   state.outcomeStageNext = stage;
 }
 
+void advanceOutcomeQueue(AppState& state) {
+  if (state.outcomeFeedbackPendingNext) {
+    state.outcomeFeedbackPending = true;
+    state.outcomeRecipe = state.outcomeRecipeNext;
+    state.outcomeStage = state.outcomeStageNext;
+    state.outcomeFeedbackPendingNext = false;
+    state.outcomeRecipeNext = "";
+    state.outcomeStageNext = "";
+  } else {
+    state.outcomeFeedbackPending = false;
+    state.outcomeRecipe = "";
+    state.outcomeStage = "";
+  }
+}
+
+void clearAllPendingOutcomes(AppState& state) {
+  state.outcomeFeedbackPending = false;
+  state.outcomeRecipe = "";
+  state.outcomeStage = "";
+  state.outcomeFeedbackPendingNext = false;
+  state.outcomeRecipeNext = "";
+  state.outcomeStageNext = "";
+}
+
 void finishProof(AppState& state) {
   if (!proofCanFinish(state)) return;
 
@@ -692,6 +751,9 @@ void startNewProof(AppState& state) {
   // though the recipe, stage, and target stay put underneath so the picker still opens
   // pre-filled with what was just used.
   state.recipeConfigured = false;
+  // A rating for a run you're no longer looking at isn't useful feedback, and the recipe/stage
+  // it would have nudged gets another chance from whatever's baked next.
+  clearAllPendingOutcomes(state);
 }
 
 void updateProofStateFromRise(AppState& state) {
@@ -717,7 +779,7 @@ void updateProofStateFromRise(AppState& state) {
 
   state.pendingEventActive = false;
   if (currentSegmentElapsedSeconds(state) >= requiredSegmentFloorSeconds(state) &&
-      state.peakProgressPercent >= state.targetRisePercent) {
+      state.peakProgressPercent >= liveTargetRisePercent(state)) {
     state.proofState = ProofState::TargetReached;
     return;
   }

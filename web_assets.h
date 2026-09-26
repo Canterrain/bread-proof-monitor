@@ -304,7 +304,7 @@ button.secondary.ready {
   box-shadow: 0 10px 24px rgba(110, 63, 29, 0.24);
 }
 
-button.secondary.saved {
+button.saved {
   background: #d7ead8;
   color: #24452d;
   box-shadow: 0 8px 20px rgba(70, 112, 76, 0.16);
@@ -467,6 +467,8 @@ for (const preset of PROFILE_LIST) {
 let currentProfile = BOOT.profile || 'Custom';
 let currentStage = BOOT.stage || 'Bulk';
 let setEmptySavedUntil = 0;
+let setStartSavedUntil = 0;
+let rebaselineSavedUntil = 0;
 
 function handleResponse(response) {
   if (response.ok) return response;
@@ -527,6 +529,53 @@ function updateSetEmptyUi(data) {
   } else {
     feedback.textContent = 'Waiting for a live distance reading before empty setup can be saved.';
   }
+}
+
+function updateSetStartUi(data) {
+  const button = document.getElementById('setStartButton');
+  const feedback = document.getElementById('setStartFeedback');
+  if (!button || !feedback) return;
+
+  const hasStartingHeight = data.startingHeight > 0;
+  const showSaved = hasStartingHeight && Date.now() < setStartSavedUntil;
+
+  button.classList.remove('saved');
+  feedback.classList.remove('success');
+
+  if (showSaved) {
+    button.textContent = 'Starting Height Saved';
+    button.classList.add('saved');
+    feedback.textContent = 'Starting dough height captured. Monitoring will track rise from here.';
+    feedback.classList.add('success');
+    return;
+  }
+
+  button.textContent = 'Set Starting Dough Height';
+  feedback.textContent = hasStartingHeight
+    ? 'Tap again only if you moved the dough or reset the container - each press restarts tracking from a new reading.'
+    : '';
+}
+
+function updateRebaselineUi() {
+  const button = document.getElementById('rebaselineButton');
+  const feedback = document.getElementById('rebaselineFeedback');
+  if (!button || !feedback) return;
+
+  const showSaved = Date.now() < rebaselineSavedUntil;
+
+  button.classList.remove('saved');
+  feedback.classList.remove('success');
+
+  if (showSaved) {
+    button.textContent = 'Re-baselined';
+    button.classList.add('saved');
+    feedback.textContent = 'New baseline captured. Rise will track from here.';
+    feedback.classList.add('success');
+    return;
+  }
+
+  button.textContent = 'Re-baseline After Lid Off';
+  feedback.textContent = '';
 }
 
 function findPresetByName(name) {
@@ -670,12 +719,14 @@ function applyLiveData(data) {
   setText('proofMetaValue', profileMeta);
 
   updateSetEmptyUi(data);
+  updateSetStartUi(data);
   toggleButton('setEmptyButton', data.canSetEmpty);
   toggleButton('setStartButton', data.canSetStart);
   toggleButton('pauseButton', data.canPause);
   toggleButton('resumeButton', data.canResume);
   toggleButton('finishButton', data.canFinish);
   toggleButton('rebaselineButton', data.canRebaseline);
+  updateRebaselineUi();
 
   const outcomeCard = document.getElementById('outcomeCard');
   if (outcomeCard) {
@@ -695,6 +746,15 @@ function rateOutcome(rating) {
   fetch('/rate-outcome?rating=' + rating, { method: 'POST' })
     .then(handleResponse)
     .then(() => { window.location.reload(); })
+    .catch((error) => alert(error.message || 'Could not reach Proof Monitor.'));
+}
+
+function skipOutcome() {
+  // Unlike a rating, skipping never touches a learned target, so a plain AJAX refresh is
+  // enough here - no need for rateOutcome()'s full reload.
+  fetch('/skip-outcome', { method: 'POST' })
+    .then(handleResponse)
+    .then(() => updateLiveData())
     .catch((error) => alert(error.message || 'Could not reach Proof Monitor.'));
 }
 
@@ -729,6 +789,12 @@ function sendAction(path) {
     .then(() => {
       if (path === '/set-empty') {
         setEmptySavedUntil = Date.now() + 4000;
+      }
+      if (path === '/set-start') {
+        setStartSavedUntil = Date.now() + 4000;
+      }
+      if (path === '/rebaseline') {
+        rebaselineSavedUntil = Date.now() + 4000;
       }
       if (path === '/reset-learned-targets') {
         // Clearing learned adjustments changes every recipe's target; reload so the profile

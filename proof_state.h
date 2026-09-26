@@ -58,6 +58,13 @@ void finishProof(AppState& state);
 // the pending one immediately; otherwise it waits in the "Next" slot until the current one is
 // rated (see handleRateOutcome()), so a Bulk rating queued when Final auto-starts isn't lost.
 void queuePendingOutcome(AppState& state, const String& recipe, const String& stage);
+// After the current pending outcome has been handled (rated or skipped), promotes the queued
+// "Next" one (if any) into its place, or clears the slot entirely if there isn't one.
+void advanceOutcomeQueue(AppState& state);
+// Unconditionally discards the pending outcome and any queued "Next" one - used when a whole
+// new proof begins, since a rating for a run you can no longer clearly remember isn't useful
+// feedback, and the recipe/stage it would have nudged gets another chance from the new run.
+void clearAllPendingOutcomes(AppState& state);
 void startNewProof(AppState& state);
 void updateProofStateFromRise(AppState& state);
 void clearActiveProofRunForStage(AppState& state, bool clearEmptyCalibration);
