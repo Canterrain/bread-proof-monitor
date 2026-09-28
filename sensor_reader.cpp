@@ -59,11 +59,11 @@ float medianDistance(float* values, uint8_t count) {
 constexpr uint8_t kSamplesNeeded = 5;
 constexpr uint8_t kMaxAttempts = 10;
 constexpr unsigned long kSampleDelayMs = 35;
-// Five valid samples aren't necessarily five *agreeing* samples - a surface still settling (or
-// noisy readings that individually pass range/status checks) can produce a "successful" median
-// that doesn't reflect anything real. Reject a batch whose spread is too wide to trust, the same
-// way a failed capture is already rejected, rather than silently accepting it.
-constexpr float kMaxStableSpreadMm = 5.0f;
+// Five valid samples aren't necessarily five *agreeing* samples - a surface still moving can
+// produce a "successful" median that doesn't reflect anything real. This is a gross-instability
+// check, not a noise filter: at this rig's ~235mm standoff the sensor's own jitter measured up
+// to ~11mm across a batch on a perfectly still surface, so anything tighter rejects good reads.
+constexpr float kMaxStableSpreadMm = 15.0f;
 
 bool readMedianDistanceMm(float& distanceMm) {
   float samples[kSamplesNeeded] = {};
@@ -93,7 +93,10 @@ bool readMedianDistanceMm(float& distanceMm) {
 }  // namespace
 
 void beginSensors(AppState& state) {
-  state.loxReady = gLox.begin();
+  // Long-range mode: at this rig's standoff (~130-240mm to the dough) the default profile
+  // returned every single reading as RangeStatus 2 (Signal Fail, return too weak), which the
+  // strict status check below correctly rejects. Long-range mode gets valid status-0 reads.
+  state.loxReady = gLox.begin(VL53L0X_I2C_ADDR, false, &Wire, Adafruit_VL53L0X::VL53L0X_SENSE_LONG_RANGE);
   state.shtReady = gSht31.begin(0x44);
 }
 
