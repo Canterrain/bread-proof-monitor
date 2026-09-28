@@ -36,7 +36,7 @@ String liveDataJson(const AppState& state) {
   json += "\"proofState\":\"" + proofStateApiValue(state.proofState) + "\",";
   json += "\"profile\":\"" + jsonEscape(state.selectedRecipe) + "\",";
   json += "\"stage\":\"" + jsonEscape(state.selectedStage) + "\",";
-  json += "\"target\":" + String(state.targetRisePercent, 0) + ",";
+  json += "\"target\":" + String(displayedTargetRisePercent(state), 0) + ",";
   json += "\"distance\":" + String(state.smoothedDistanceMm, 1) + ",";
   json += "\"currentHeight\":" + String(currentDoughHeightMm(state), 1) + ",";
   json += "\"startingHeight\":" + String(startingDoughHeightMm(state), 1) + ",";
@@ -151,7 +151,7 @@ String dashboardPage(const AppState& state) {
   if (state.recipeConfigured) {
     html += htmlEscape(state.selectedStage);
     html += " / Target ";
-    html += String(state.targetRisePercent, 0);
+    html += String(displayedTargetRisePercent(state), 0);
     html += "%";
   } else {
     html += "Choose your bake or adjust the target before you start.";
@@ -201,7 +201,7 @@ String dashboardPage(const AppState& state) {
   html += R"rawliteral(</span>
         <strong id="targetValue">)rawliteral";
 
-  html += String(state.targetRisePercent, 0);
+  html += String(displayedTargetRisePercent(state), 0);
 
   html += R"rawliteral(%</strong>
       </div>

@@ -18,6 +18,7 @@ constexpr char kPendingEventNotifiedKey[] = "eventSent";
 constexpr char kSegmentBaselineKey[] = "segBase";
 constexpr char kCompletedOffsetKey[] = "progOffset";
 constexpr char kPeakProgressKey[] = "peakProg";
+constexpr char kSettlingKey[] = "settling";
 constexpr char kOutcomePendingKey[] = "outcomePend";
 constexpr char kOutcomeRecipeKey[] = "outcomeRecipe";
 constexpr char kOutcomeStageKey[] = "outcomeStage";
@@ -171,6 +172,7 @@ void loadAppState(Preferences& prefs, AppState& state) {
   state.segmentBaselineDistanceMm = prefs.getFloat(kSegmentBaselineKey, 0.0f);
   state.completedProgressOffsetPercent = prefs.getFloat(kCompletedOffsetKey, 0.0f);
   state.peakProgressPercent = prefs.getFloat(kPeakProgressKey, 0.0f);
+  state.settlingActive = prefs.getBool(kSettlingKey, false);
   state.outcomeFeedbackPending = prefs.getBool(kOutcomePendingKey, false);
   state.outcomeRecipe = prefs.getString(kOutcomeRecipeKey, "");
   state.outcomeStage = prefs.getString(kOutcomeStageKey, "");
@@ -235,6 +237,7 @@ void saveAppState(Preferences& prefs, const AppState& state) {
   prefs.putFloat(kSegmentBaselineKey, state.segmentBaselineDistanceMm);
   prefs.putFloat(kCompletedOffsetKey, state.completedProgressOffsetPercent);
   prefs.putFloat(kPeakProgressKey, state.peakProgressPercent);
+  prefs.putBool(kSettlingKey, state.settlingActive);
   prefs.putBool(kOutcomePendingKey, state.outcomeFeedbackPending);
   prefs.putString(kOutcomeRecipeKey, state.outcomeRecipe);
   prefs.putString(kOutcomeStageKey, state.outcomeStage);

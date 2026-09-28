@@ -25,6 +25,9 @@ struct AppState {
   bool setupMode = false;
   bool targetNotified = false;
   bool recipeConfigured = false;
+  // True for the first few minutes after Set Starting Dough Height or a completed fold, while
+  // the dough relaxes back up. Rise is held steady until it ends - see proof_state.cpp.
+  bool settlingActive = false;
   bool awaitingFinalProofStart = false;
   bool pendingEventActive = false;
   bool pendingEventNotified = false;

@@ -16,6 +16,16 @@ constexpr unsigned long kPeakConfirmMs = 8000;
 constexpr unsigned long kDefaultReferenceFloorSeconds = 20 * 60;
 constexpr unsigned long kMinSegmentFloorSeconds = 8 * 60;
 constexpr unsigned long kMaxSegmentFloorSeconds = 40 * 60;
+// How long after Set Starting Dough Height, or after completing a fold, the rise is held steady
+// (at 0% for a fresh start, at the already-earned percentage after a fold). Smoothing the surface and
+// then watching it relax back up (or the mount shifting after being handled) moves the reading
+// several mm in the first minutes, which would otherwise be counted - and permanently locked
+// in by the peak - as real rise. Once the window ends, the settled reading becomes the start.
+constexpr unsigned long kSettleWindowSeconds = 10 * 60;
+// The peak only ever moves up, and this sensor jitters a few mm at the rig's standoff (about 1.4%
+// of rise per mm on a 70mm dough), so symmetric noise alone turns into a one-sided climb in the
+// peak within minutes. A new peak has to clear the old one by more than this to count.
+constexpr float kPeakDeadbandMm = 3.0f;
 constexpr float kReferenceTempF = 75.0f;
 constexpr float kFermentationDoublingSpanF = 18.0f;
 
@@ -155,6 +165,16 @@ float instantRawProgressPercent(const AppState& state) {
   return state.completedProgressOffsetPercent + segmentRise;
 }
 
+// kPeakDeadbandMm expressed as percent of rise for this segment's own baseline height.
+float peakDeadbandPercent(const AppState& state) {
+  const float baselineDistanceMm = state.segmentBaselineDistanceMm > 0.0f
+                                       ? state.segmentBaselineDistanceMm
+                                       : state.startDistanceMm;
+  const float baselineHeight = doughHeightFromDistanceMm(state, baselineDistanceMm);
+  if (baselineHeight <= 0.0f) return 0.0f;
+  return (kPeakDeadbandMm / baselineHeight) * 100.0f;
+}
+
 int8_t resolvedPendingEventIndex(const AppState& state, const RecipePreset& preset) {
   if (state.pendingEventIndex >= 0 &&
       state.pendingEventIndex < static_cast<int8_t>(preset.eventCount) &&
@@ -203,6 +223,7 @@ void clearActiveProofRun(AppState& state) {
   state.targetNotified = false;
   state.pendingEventActive = false;
   state.pendingEventNotified = false;
+  state.settlingActive = false;
   state.proofState = ProofState::NotStarted;
 }
 
@@ -279,6 +300,10 @@ bool proofCanRebaseline(const AppState& state) {
          !proofDistanceReadingStale(state);
 }
 
+float displayedTargetRisePercent(const AppState& state) {
+  return liveTargetRisePercent(state);
+}
+
 bool proofAwaitingDoughPrep(const AppState& state) {
   return state.recipeConfigured &&
          state.proofState != ProofState::Finished &&
@@ -306,6 +331,8 @@ float liveRisePercent(const AppState& state) {
 }
 
 float overallProgressPercent(const AppState& state) {
+  // Held while settling: the live reading is still moving for reasons that aren't rise.
+  if (state.settlingActive) return state.peakProgressPercent;
   const float rawProgress = rawOverallProgressPercent(state);
   return rawProgress > state.peakProgressPercent ? rawProgress : state.peakProgressPercent;
 }
@@ -385,6 +412,7 @@ String statusText(const AppState& state) {
   if (state.awaitingFinalProofStart) return "Bulk proof complete";
   if (!proofHasEmptyCalibration(state)) return "Set empty setup";
   if (!proofHasStartingHeight(state)) return "Set starting dough height";
+  if (state.settlingActive) return "Settling";
   const ActiveFermentationEventStatus eventStatus = currentFermentationEvent(state);
   if (eventStatus.exists && eventStatus.due) return eventStatus.event.title;
   if (state.proofState == ProofState::TargetReached) return "Target reached";
@@ -636,6 +664,9 @@ void completeCurrentEvent(AppState& state) {
   state.targetNotified = false;
   state.segmentStartedAtMillis = millis();
   state.segmentElapsedOffsetSeconds = 0;
+  // Folded dough relaxes back up just like smoothed dough does, so hold the earned percentage
+  // (the offset above) steady until it settles rather than counting that as new rise.
+  state.settlingActive = true;
   updateProofStateFromRise(state);
 }
 
@@ -667,6 +698,7 @@ void startProof(AppState& state) {
   state.awaitingFinalProofStart = false;
   state.segmentStartedAtMillis = millis();
   state.segmentElapsedOffsetSeconds = 0;
+  state.settlingActive = true;
   state.proofState = ProofState::Running;
 }
 
@@ -779,14 +811,44 @@ void updateProofStateFromRise(AppState& state) {
   if (state.proofState != ProofState::Running && state.proofState != ProofState::TargetReached) return;
   if (!riseInputsReady(state)) return;
   if (proofDistanceReadingStale(state)) return;
+
+  if (state.settlingActive) {
+    if (currentSegmentElapsedSeconds(state) < kSettleWindowSeconds) {
+      // Nothing counts yet - no peak, no fold, no target.
+      state.pendingEventActive = false;
+      state.proofState = ProofState::Running;
+      return;
+    }
+    // Window's over: whatever the surface settled to is the real starting point. The proof's own
+    // starting height only moves if this was the initial window - after a fold it stays put.
+    if (state.completedProgressOffsetPercent <= 0.0f) {
+      state.startDistanceMm = state.smoothedDistanceMm;
+    }
+    state.segmentBaselineDistanceMm = state.smoothedDistanceMm;
+    state.peakProgressPercent = state.completedProgressOffsetPercent;
+    state.peakCandidateSinceMillis = 0;
+    state.settlingActive = false;
+    return;
+  }
+
   // Confirmation is checked against this tick's own instant reading, not the smoothed display
   // value - see instantRawProgressPercent() for why.
   const float instantProgress = instantRawProgressPercent(state);
-  if (instantProgress > state.peakProgressPercent) {
+  const float deadbandPercent = peakDeadbandPercent(state);
+  if (state.pendingEventActive) {
+    // A fold is waiting on the baker. The peak freezes at whatever fired the alert: once the
+    // dough is lifted and folded its surface sits at a different height, and Complete Step copies
+    // the peak into the offset, so anything the peak banked between Resume and Complete Step
+    // would be the fold's own reshaping counted as rise. (Costs the few points of real rise
+    // between the alert and the fold.)
+    state.peakCandidateSinceMillis = 0;
+  } else if (instantProgress > state.peakProgressPercent + deadbandPercent) {
     if (state.peakCandidateSinceMillis == 0) {
       state.peakCandidateSinceMillis = millis();
     } else if (millis() - state.peakCandidateSinceMillis >= kPeakConfirmMs) {
-      state.peakProgressPercent = instantProgress;
+      // Lands one deadband under the reading, so whatever noise helped it clear the old peak
+      // doesn't stay banked. Decisions run at most about a deadband behind real progress.
+      state.peakProgressPercent = instantProgress - deadbandPercent;
     }
   } else {
     state.peakCandidateSinceMillis = 0;

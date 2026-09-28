@@ -27,6 +27,10 @@ bool proofCanRebaseline(const AppState& state);
 // dough per the linked recipe (empty setup done, starting height not yet set, not finished,
 // reading not stale) - used to surface a real Open Recipe link alongside that instruction.
 bool proofAwaitingDoughPrep(const AppState& state);
+// The target the app is actually deciding against right now: state.targetRisePercent (the
+// shipped or learned reference) adjusted for dough temperature where that applies. This is what
+// to show, not the raw stored value, or the display disagrees with when things actually fire.
+float displayedTargetRisePercent(const AppState& state);
 
 float currentDoughHeightMm(const AppState& state);
 float startingDoughHeightMm(const AppState& state);
