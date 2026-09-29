@@ -144,6 +144,11 @@ String dashboardPage(const AppState& state) {
         <h2 class="proof-title" id="profileValue">)rawliteral";
 
   html += htmlEscape(state.selectedRecipe);
+  if (state.recipeConfigured) {
+    html += " (";
+    html += htmlEscape(state.selectedStage);
+    html += ")";
+  }
 
   html += R"rawliteral(</h2>
         <div class="proof-meta" id="proofMetaValue">)rawliteral";

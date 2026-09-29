@@ -696,7 +696,7 @@ function applyLiveData(data) {
   setText('elapsedValue', data.elapsed);
   setText('temperatureValue', data.temperature + ' \u00B0F');
   setText('humidityValue', data.humidity + '%');
-  setText('profileValue', data.profile);
+  setText('profileValue', data.showProfilePicker ? data.profile : data.profile + ' (' + data.stage + ')');
   setText('stageValue', data.stage);
   updateRecipeLink(data.profile);
   updateOpenRecipeLink(data.profile, data.needsDoughPrepLink);

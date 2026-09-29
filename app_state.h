@@ -28,6 +28,10 @@ struct AppState {
   // True for the first few minutes after Set Starting Dough Height or a completed fold, while
   // the dough relaxes back up. Rise is held steady until it ends - see proof_state.cpp.
   bool settlingActive = false;
+  // True when the current settle window is a brief post-disturbance one (fold or manual
+  // re-baseline, kPostDisturbanceSettleSeconds) rather than the longer initial-start one
+  // (kSettleWindowSeconds) - see updateProofStateFromRise() in proof_state.cpp.
+  bool settlingIsPostDisturbance = false;
   bool awaitingFinalProofStart = false;
   bool pendingEventActive = false;
   bool pendingEventNotified = false;

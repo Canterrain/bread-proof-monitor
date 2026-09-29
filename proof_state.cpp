@@ -22,6 +22,10 @@ constexpr unsigned long kMaxSegmentFloorSeconds = 40 * 60;
 // several mm in the first minutes, which would otherwise be counted - and permanently locked
 // in by the peak - as real rise. Once the window ends, the settled reading becomes the start.
 constexpr unsigned long kSettleWindowSeconds = 10 * 60;
+// A fold or manual re-baseline only briefly disturbs a surface that's already mid-rise, unlike a
+// fresh start where nothing has settled yet - real fold-to-fold gaps (King Arthur's own no-knead
+// schedule runs ~15 minutes apart) leave little room for a full 10-minute hold on top of them.
+constexpr unsigned long kPostDisturbanceSettleSeconds = 3 * 60;
 // The peak only ever moves up, and this sensor jitters a few mm at the rig's standoff (about 1.4%
 // of rise per mm on a 70mm dough), so symmetric noise alone turns into a one-sided climb in the
 // peak within minutes. A new peak has to clear the old one by more than this to count.
@@ -184,6 +188,16 @@ int8_t resolvedPendingEventIndex(const AppState& state, const RecipePreset& pres
 }
 
 void primeEventStateForSelection(AppState& state, const RecipePreset* preset = nullptr) {
+  // A proof that's already Running/TargetReached has a live segment clock and real banked
+  // progress - there's nothing here that's safe to re-prime out from under it. Zeroing
+  // segmentStartedAtMillis while Running is what let simply re-applying the same profile/target
+  // (e.g. the picker's Apply button, even with nothing changed) permanently freeze the settle
+  // window: currentSegmentElapsedSeconds() treats 0 as "never started" and nothing else re-arms
+  // it outside of starting a proof, completing a fold, or a settle-release. startProof() and
+  // beginFinalStage() only ever call this while proofState is NotStarted anyway (either already,
+  // or via clearActiveProofRunForStage() just above), so this guard doesn't change their behavior.
+  if (state.proofState == ProofState::Running || state.proofState == ProofState::TargetReached) return;
+
   state.pendingEventActive = false;
   state.completedEventCount = 0;
   state.pendingEventNotified = false;
@@ -667,6 +681,7 @@ void completeCurrentEvent(AppState& state) {
   // Folded dough relaxes back up just like smoothed dough does, so hold the earned percentage
   // (the offset above) steady until it settles rather than counting that as new rise.
   state.settlingActive = true;
+  state.settlingIsPostDisturbance = true;
   updateProofStateFromRise(state);
 }
 
@@ -680,6 +695,10 @@ void rebaselineProof(AppState& state) {
   state.peakCandidateSinceMillis = 0;
   state.segmentStartedAtMillis = millis();
   state.segmentElapsedOffsetSeconds = 0;
+  // Lid-off handling is the same kind of brief disturbance a fold is - hold steady and let it
+  // settle before trusting the reading again, same as completeCurrentEvent().
+  state.settlingActive = true;
+  state.settlingIsPostDisturbance = true;
   updateProofStateFromRise(state);
 }
 
@@ -699,6 +718,7 @@ void startProof(AppState& state) {
   state.segmentStartedAtMillis = millis();
   state.segmentElapsedOffsetSeconds = 0;
   state.settlingActive = true;
+  state.settlingIsPostDisturbance = false;
   state.proofState = ProofState::Running;
 }
 
@@ -813,7 +833,9 @@ void updateProofStateFromRise(AppState& state) {
   if (proofDistanceReadingStale(state)) return;
 
   if (state.settlingActive) {
-    if (currentSegmentElapsedSeconds(state) < kSettleWindowSeconds) {
+    const unsigned long settleWindowSeconds =
+        state.settlingIsPostDisturbance ? kPostDisturbanceSettleSeconds : kSettleWindowSeconds;
+    if (currentSegmentElapsedSeconds(state) < settleWindowSeconds) {
       // Nothing counts yet - no peak, no fold, no target.
       state.pendingEventActive = false;
       state.proofState = ProofState::Running;
