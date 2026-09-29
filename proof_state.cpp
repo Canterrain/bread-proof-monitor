@@ -26,6 +26,12 @@ constexpr unsigned long kSettleWindowSeconds = 10 * 60;
 // of rise per mm on a 70mm dough), so symmetric noise alone turns into a one-sided climb in the
 // peak within minutes. A new peak has to clear the old one by more than this to count.
 constexpr float kPeakDeadbandMm = 3.0f;
+// A fixed mm deadband is a small margin on a tall dough but can swallow most of a shallow
+// container's whole target - 3mm was about 4% of a 70mm no-knead bucket but 8%+ of a ~36mm
+// Detroit Pizza bulk container, against a 10% fold trigger. Capped here so a shallow container
+// can't lose most of its own trigger range to noise margin; tall doughs are unaffected as long
+// as the mm-based value stays under this.
+constexpr float kMaxPeakDeadbandPercent = 4.0f;
 constexpr float kReferenceTempF = 75.0f;
 constexpr float kFermentationDoublingSpanF = 18.0f;
 
@@ -139,22 +145,12 @@ float risePercentFromDistances(const AppState& state, float baselineDistanceMm, 
   return risePercent > 0.0f ? risePercent : 0.0f;
 }
 
-float rawOverallProgressPercent(const AppState& state) {
-  if (!proofHasStartingHeight(state)) return 0.0f;
-
-  const float baselineDistanceMm = state.segmentBaselineDistanceMm > 0.0f
-                                       ? state.segmentBaselineDistanceMm
-                                       : state.startDistanceMm;
-  const float segmentRise = risePercentFromDistances(state, baselineDistanceMm, state.smoothedDistanceMm);
-  return state.completedProgressOffsetPercent + segmentRise;
-}
-
-// Same as rawOverallProgressPercent(), but against this tick's fresh, unsmoothed reading rather
-// than smoothedDistanceMm. Used only for peak-candidate confirmation below: the EMA blend in
-// readSensors() can keep a single bad tick visibly elevated for tens of seconds while it decays
-// back out, which is long enough to satisfy the 8-second confirm window on its own. Each tick's
-// median-of-5 read is independent of the others, so a transient error here reverts on the very
-// next tick instead of smearing across several.
+// Progress against this tick's fresh, unsmoothed reading rather than smoothedDistanceMm. Used
+// only for peak-candidate confirmation below: the EMA blend in readSensors() can keep a single
+// bad tick visibly elevated for tens of seconds while it decays back out, which is long enough
+// to satisfy the 8-second confirm window on its own. Each tick's median-of-5 read is independent
+// of the others, so a transient error here reverts on the very next tick instead of smearing
+// across several.
 float instantRawProgressPercent(const AppState& state) {
   if (!proofHasStartingHeight(state)) return 0.0f;
 
@@ -172,7 +168,9 @@ float peakDeadbandPercent(const AppState& state) {
                                        : state.startDistanceMm;
   const float baselineHeight = doughHeightFromDistanceMm(state, baselineDistanceMm);
   if (baselineHeight <= 0.0f) return 0.0f;
-  return (kPeakDeadbandMm / baselineHeight) * 100.0f;
+
+  const float deadbandPercent = (kPeakDeadbandMm / baselineHeight) * 100.0f;
+  return deadbandPercent < kMaxPeakDeadbandPercent ? deadbandPercent : kMaxPeakDeadbandPercent;
 }
 
 int8_t resolvedPendingEventIndex(const AppState& state, const RecipePreset& preset) {
@@ -330,11 +328,12 @@ float liveRisePercent(const AppState& state) {
   return ((currentHeight - startHeight) / startHeight) * 100.0f;
 }
 
+// What's shown and reasoned about everywhere but the confirmation logic itself: the confirmed
+// peak, not the live raw reading. The peak only moves once a rise clears the deadband and holds
+// for the confirm window, so this can't jump around on noise the way showing the raw reading
+// directly would - it only changes when something's actually been confirmed.
 float overallProgressPercent(const AppState& state) {
-  // Held while settling: the live reading is still moving for reasons that aren't rise.
-  if (state.settlingActive) return state.peakProgressPercent;
-  const float rawProgress = rawOverallProgressPercent(state);
-  return rawProgress > state.peakProgressPercent ? rawProgress : state.peakProgressPercent;
+  return state.peakProgressPercent;
 }
 
 float displayRisePercent(const AppState& state) {
@@ -549,9 +548,10 @@ String currentStepInstruction(const AppState& state) {
   }
 
   if (overallProgressPercent(state) >= liveTargetRisePercent(state)) {
-    return "The reading has hit your target already, but the app waits a bit longer at "
-           "this temperature before trusting it, in case it was a brief spike rather than "
-           "real rise. No action needed, this resolves on its own shortly.";
+    return "The reading has confirmed your target already, but the app waits until enough "
+           "time has passed at this temperature before finishing, so an unrealistically fast "
+           "measurement isn't trusted on its own. No action needed, this resolves on its own "
+           "shortly.";
   }
 
   return "Keep monitoring until the dough reaches the selected target rise.";
