@@ -37,6 +37,12 @@ float startingDoughHeightMm(const AppState& state);
 float liveRisePercent(const AppState& state);
 float overallProgressPercent(const AppState& state);
 float displayRisePercent(const AppState& state);
+// Diagnostic-only, exposed via /data for remote noise investigation on shallow doughs - the
+// live pre-confirm reading and the mm-deadband it has to clear, in percent terms, before a new
+// peak locks in. See proof_state.cpp for why this differs from the smoothed display value.
+float instantRawProgressPercent(const AppState& state);
+float peakDeadbandPercent(const AppState& state);
+unsigned long peakConfirmMs(const AppState& state);
 
 unsigned long currentElapsedSeconds(const AppState& state);
 unsigned long currentSegmentElapsedSeconds(const AppState& state);

@@ -159,8 +159,10 @@ const RecipePreset kVisibleRecipePresets[] = {
      "https://www.kingarthurbaking.com/recipes/ciabatta-rolls-recipe",
      nullptr,
      "Complete the recipe's overnight preferment and mixing steps first."},
-    {"Specialty", "Soft Pretzels", 50, 0, false, 0, {},
-     "https://www.kingarthurbaking.com/recipes/classic-pretzels-recipe"},
+    {"Specialty", "Soft Pretzels", 90, 0, false, 0, {},
+     "https://www.kingarthurbaking.com/recipes/hot-buttered-soft-pretzels-recipe",
+     "Shape the pretzels, give them their short final rest per the recipe, then bake. That "
+     "step is brief and done uncovered, so it isn't tracked here."},
     {"Rolls", "Dinner Rolls", 90, 50, true, 0, {},
      "https://www.kingarthurbaking.com/recipes/soft-dinner-rolls-recipe"},
     {"Rolls", "Hawaiian Rolls", 50, 50, true, 0, {},

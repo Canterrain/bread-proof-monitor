@@ -68,7 +68,17 @@ String liveDataJson(const AppState& state) {
   // longer applies.
   json += "\"segmentBaselineDistanceMm\":" + String(state.segmentBaselineDistanceMm, 1) + ",";
   json += "\"completedProgressOffsetPercent\":" + String(state.completedProgressOffsetPercent, 1) + ",";
-  json += "\"peakProgressPercent\":" + String(state.peakProgressPercent, 1);
+  json += "\"peakProgressPercent\":" + String(state.peakProgressPercent, 1) + ",";
+  // Added for the shallow-dough noise investigation (2026-09-30) - lets a remote poll watch the
+  // pre-confirm reading and deadband directly, without needing serial access to the device.
+  json += "\"lastRawDistanceMm\":" + String(state.lastRawDistanceMm, 1) + ",";
+  json += "\"instantRawProgressPercent\":" + String(instantRawProgressPercent(state), 1) + ",";
+  json += "\"peakDeadbandPercent\":" + String(peakDeadbandPercent(state), 2) + ",";
+  json += "\"peakConfirmMs\":" + String(peakConfirmMs(state)) + ",";
+  json += "\"segmentElapsedSeconds\":" + String(currentSegmentElapsedSeconds(state)) + ",";
+  json += "\"settlingActive\":" + String(jsonBool(state.settlingActive)) + ",";
+  json += "\"settlingIsPostDisturbance\":" + String(jsonBool(state.settlingIsPostDisturbance)) + ",";
+  json += "\"peakCandidateHeldMs\":" + String(state.peakCandidateSinceMillis == 0 ? 0 : millis() - state.peakCandidateSinceMillis);
   json += "}";
 
   return json;

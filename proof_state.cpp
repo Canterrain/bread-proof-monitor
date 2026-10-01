@@ -13,6 +13,20 @@ constexpr unsigned long kDistanceStaleAfterMs = 15000;
 // enough to accept genuine rise (which persists for many minutes, not seconds) but long
 // enough to reject a one-off VL53L0X jitter spike, which reverts within a tick or two.
 constexpr unsigned long kPeakConfirmMs = 8000;
+// 8s is long enough to reject noise on a tall dough (a few mm of jitter is a small percentage of
+// the height), but not on a very shallow one - Detroit Pizza's ~10mm-tall pan-pressed Final stage
+// let ~2mm of ordinary jitter hold for a full 8s and lock in a false 15% peak (2026-09-29 live
+// bake). Real rise is persistent (keeps climbing over minutes); noise is transient (reverts) -
+// so a shallow dough needs a much longer hold before a candidate peak is trusted. This scales
+// linearly between kPeakConfirmMs (at/above kTallConfirmReferenceHeightMm, unchanged from before)
+// and kMaxPeakConfirmMs (at/below kShallowConfirmReferenceHeightMm) - see peakConfirmMs(). The
+// exact numbers are a first-pass estimate from 2026-09-30 repeatability data (glass ~1mm spread
+// vs. metal pans ~3mm spread on Set Empty captures, same order of magnitude as the phantom peak),
+// not yet validated against a live shallow bake's actual noise *timing* - tune against the next
+// one (see the pan-empty-calibration-test memory).
+constexpr unsigned long kMaxPeakConfirmMs = 90000;
+constexpr float kTallConfirmReferenceHeightMm = 60.0f;
+constexpr float kShallowConfirmReferenceHeightMm = 15.0f;
 constexpr unsigned long kDefaultReferenceFloorSeconds = 20 * 60;
 constexpr unsigned long kMinSegmentFloorSeconds = 8 * 60;
 constexpr unsigned long kMaxSegmentFloorSeconds = 40 * 60;
@@ -149,34 +163,6 @@ float risePercentFromDistances(const AppState& state, float baselineDistanceMm, 
   return risePercent > 0.0f ? risePercent : 0.0f;
 }
 
-// Progress against this tick's fresh, unsmoothed reading rather than smoothedDistanceMm. Used
-// only for peak-candidate confirmation below: the EMA blend in readSensors() can keep a single
-// bad tick visibly elevated for tens of seconds while it decays back out, which is long enough
-// to satisfy the 8-second confirm window on its own. Each tick's median-of-5 read is independent
-// of the others, so a transient error here reverts on the very next tick instead of smearing
-// across several.
-float instantRawProgressPercent(const AppState& state) {
-  if (!proofHasStartingHeight(state)) return 0.0f;
-
-  const float baselineDistanceMm = state.segmentBaselineDistanceMm > 0.0f
-                                       ? state.segmentBaselineDistanceMm
-                                       : state.startDistanceMm;
-  const float segmentRise = risePercentFromDistances(state, baselineDistanceMm, state.lastRawDistanceMm);
-  return state.completedProgressOffsetPercent + segmentRise;
-}
-
-// kPeakDeadbandMm expressed as percent of rise for this segment's own baseline height.
-float peakDeadbandPercent(const AppState& state) {
-  const float baselineDistanceMm = state.segmentBaselineDistanceMm > 0.0f
-                                       ? state.segmentBaselineDistanceMm
-                                       : state.startDistanceMm;
-  const float baselineHeight = doughHeightFromDistanceMm(state, baselineDistanceMm);
-  if (baselineHeight <= 0.0f) return 0.0f;
-
-  const float deadbandPercent = (kPeakDeadbandMm / baselineHeight) * 100.0f;
-  return deadbandPercent < kMaxPeakDeadbandPercent ? deadbandPercent : kMaxPeakDeadbandPercent;
-}
-
 int8_t resolvedPendingEventIndex(const AppState& state, const RecipePreset& preset) {
   if (state.pendingEventIndex >= 0 &&
       state.pendingEventIndex < static_cast<int8_t>(preset.eventCount) &&
@@ -258,6 +244,51 @@ String nextMilestoneText(const AppState& state) {
   return String("Next: Ready to Bake at ") + String(liveTargetRisePercent(state), 0) + "%";
 }
 }  // namespace
+
+// Progress against this tick's fresh, unsmoothed reading rather than smoothedDistanceMm. Used
+// only for peak-candidate confirmation below: the EMA blend in readSensors() can keep a single
+// bad tick visibly elevated for tens of seconds while it decays back out, which is long enough
+// to satisfy the 8-second confirm window on its own. Each tick's median-of-5 read is independent
+// of the others, so a transient error here reverts on the very next tick instead of smearing
+// across several. Exposed via the header for /data's diagnostic fields as well.
+float instantRawProgressPercent(const AppState& state) {
+  if (!proofHasStartingHeight(state)) return 0.0f;
+
+  const float baselineDistanceMm = state.segmentBaselineDistanceMm > 0.0f
+                                       ? state.segmentBaselineDistanceMm
+                                       : state.startDistanceMm;
+  const float segmentRise = risePercentFromDistances(state, baselineDistanceMm, state.lastRawDistanceMm);
+  return state.completedProgressOffsetPercent + segmentRise;
+}
+
+// kPeakDeadbandMm expressed as percent of rise for this segment's own baseline height. Exposed
+// via the header for /data's diagnostic fields as well.
+float peakDeadbandPercent(const AppState& state) {
+  const float baselineDistanceMm = state.segmentBaselineDistanceMm > 0.0f
+                                       ? state.segmentBaselineDistanceMm
+                                       : state.startDistanceMm;
+  const float baselineHeight = doughHeightFromDistanceMm(state, baselineDistanceMm);
+  if (baselineHeight <= 0.0f) return 0.0f;
+
+  const float deadbandPercent = (kPeakDeadbandMm / baselineHeight) * 100.0f;
+  return deadbandPercent < kMaxPeakDeadbandPercent ? deadbandPercent : kMaxPeakDeadbandPercent;
+}
+
+// How long a candidate peak has to hold above the deadband before it's trusted - see
+// kMaxPeakConfirmMs above for why this scales with how shallow the dough is. Exposed via the
+// header for /data's diagnostic fields as well.
+unsigned long peakConfirmMs(const AppState& state) {
+  const float baselineDistanceMm = state.segmentBaselineDistanceMm > 0.0f
+                                       ? state.segmentBaselineDistanceMm
+                                       : state.startDistanceMm;
+  const float baselineHeight = doughHeightFromDistanceMm(state, baselineDistanceMm);
+  if (baselineHeight <= 0.0f || baselineHeight >= kTallConfirmReferenceHeightMm) return kPeakConfirmMs;
+  if (baselineHeight <= kShallowConfirmReferenceHeightMm) return kMaxPeakConfirmMs;
+
+  const float t = (kTallConfirmReferenceHeightMm - baselineHeight) /
+                   (kTallConfirmReferenceHeightMm - kShallowConfirmReferenceHeightMm);
+  return kPeakConfirmMs + static_cast<unsigned long>(t * (kMaxPeakConfirmMs - kPeakConfirmMs));
+}
 
 bool proofHasEmptyCalibration(const AppState& state) {
   return state.emptyDistanceMm > 0.0f;
@@ -867,7 +898,7 @@ void updateProofStateFromRise(AppState& state) {
   } else if (instantProgress > state.peakProgressPercent + deadbandPercent) {
     if (state.peakCandidateSinceMillis == 0) {
       state.peakCandidateSinceMillis = millis();
-    } else if (millis() - state.peakCandidateSinceMillis >= kPeakConfirmMs) {
+    } else if (millis() - state.peakCandidateSinceMillis >= peakConfirmMs(state)) {
       // Lands one deadband under the reading, so whatever noise helped it clear the old peak
       // doesn't stay banked. Decisions run at most about a deadband behind real progress.
       state.peakProgressPercent = instantProgress - deadbandPercent;
