@@ -1,8 +1,8 @@
 {
-  "version": "0.1.2-preview",
-  "builtAt": "2026-09-21T18:47:22+00:00",
+  "version": "0.1.3-preview",
+  "builtAt": "2026-10-03T02:42:31+00:00",
   "fqbn": "esp32:esp32:esp32:PartitionScheme=huge_app",
-  "sourceSha256": "d70aba584603c458a43bafa8a2d44dc3a47f81a96f0b4ab23d5778229300311e",
+  "sourceSha256": "d210012b485eefb18d90f781fd767d74209a6ea1c2895356ea1db141e88cd27d",
   "sourceFiles": [
     "app_state.cpp",
     "app_state.h",
@@ -47,8 +47,8 @@
     {
       "path": "firmware.bin",
       "offset": 65536,
-      "bytes": 1240416,
-      "sha256": "da1236c5c234ee2499e99eca3b5d8b3925af8b204d7556be42cf4f81c5530660"
+      "bytes": 1246400,
+      "sha256": "5cad8bc0e046fa4393fc5226b727b33b5f2e4af02bc4a38ff35895c1ad575fd0"
     }
   ]
 }
