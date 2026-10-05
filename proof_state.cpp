@@ -476,13 +476,24 @@ String nextStepText(const AppState& state) {
   // Bulk stage here (that's always monitored in some straight-sided vessel). Final proof is
   // almost always shaped dough in a pan, tray, or sheet instead, viewed from above, so it gets
   // its own wording rather than reusing a container-specific check that wouldn't apply.
+  String checks = "slight jiggle, slow springback from a gentle poke, ";
   if (state.selectedStage == "Final") {
-    return "Check for slight jiggle, slow springback from a gentle poke, and a visibly puffy, "
-           "rounded top. If it looks right, finish this proof. If it needs more time, resume "
-           "monitoring.";
+    checks += "and a visibly puffy, rounded top";
+  } else {
+    // A recipe-specific extra (e.g. stretching thin without tearing) joins the list; the
+    // "and" moves to the end so the sentence still reads naturally.
+    RecipePreset preset;
+    if (loadSelectedPreset(state, preset) && preset.bulkReadinessCheck != nullptr) {
+      checks += "visible bubbles along the side, and " + String(preset.bulkReadinessCheck);
+    } else {
+      checks += "and visible bubbles along the side";
+    }
   }
 
-  return "Check for slight jiggle, slow springback from a gentle poke, and visible bubbles along the side. If it looks right, finish this proof. If it needs more time, resume monitoring.";
+  // At target the app keeps tracking and only Finish Proof ends it - there is no Resume button
+  // here (that exists only while paused), so "needs more time" means leave it running.
+  return "Check for " + checks + ". If it looks right, finish this proof. If it needs more time, "
+         "just leave it running. Tracking continues until you press Finish Proof.";
 }
 
 String phoneAlertText(const AppState& state) {

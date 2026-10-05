@@ -125,7 +125,7 @@ const RecipePreset kVisibleRecipePresets[] = {
      "https://www.kingarthurbaking.com/recipes/bagels-recipe"},
     {"Breakfast", "Sourdough Bagels", 40, 20, true, 0, {},
      "https://www.kingarthurbaking.com/recipes/sourdough-bagels-recipe"},
-    {"Breakfast", "Cinnamon Rolls", 65, 45, true, 3,
+    {"Breakfast", "Cinnamon Rolls", 100, 45, true, 3,
      {
          {"Bulk", "handling", "Stretch & Fold",
           "Stretch and fold the dough, return it under the monitor, then press Complete Step.",
@@ -140,7 +140,9 @@ const RecipePreset kVisibleRecipePresets[] = {
      },
      "https://www.kingarthurbaking.com/recipes/sourdough-cinnamon-rolls-recipe",
      nullptr,
-     "Complete the recipe's autolyse and mixing steps first."},
+     "Complete the recipe's autolyse and mixing steps first.",
+     20,
+     "dough that stretches thin without tearing"},
     {"Breakfast", "Sticky Buns", 90, 50, true, 0, {},
      "https://www.kingarthurbaking.com/recipes/sticky-buns-recipe"},
     {"Specialty", "Babka", 50, 50, true, 0, {},
@@ -306,9 +308,15 @@ bool profileRequiresStageSetupReset(const String& name) {
 bool recipeUsesTemperatureScaledTarget(const String& name) {
   const String normalizedName = normalizeProfileName(name);
 
-  // Every starter-leavened recipe in the table, including three whose plain display name
-  // doesn't say "Sourdough" at all (Baguettes, Cinnamon Rolls, Hamburger Buns are all sourdough
-  // recipes under the hood - check their sourceUrl above before assuming from the name).
+  // Starter-leavened recipes in the table, including two whose plain display name doesn't say
+  // "Sourdough" at all (Baguettes and Hamburger Buns are sourdough recipes under the hood -
+  // check their sourceUrl above before assuming from the name).
+  //
+  // Cinnamon Rolls is deliberately NOT here even though it is a sourdough recipe: on a live bake
+  // (2026-10-02) the scaled target called the dough ready at ~39% while it was visibly doubled and
+  // right at ~100% when the baker judged it done. The air temperature this sensor reads isn't the
+  // dough's, and an enriched dough's readiness didn't track it. Hamburger Buns is another enriched
+  // sourdough and may need the same treatment once it has been baked and checked.
   return normalizedName == "Sourdough Sandwich Bread" ||
          normalizedName == "Rustic Sourdough" ||
          normalizedName == "No-Knead Sourdough Bread" ||
@@ -316,6 +324,5 @@ bool recipeUsesTemperatureScaledTarget(const String& name) {
          normalizedName == "Sourdough Pizza Crust" ||
          normalizedName == "Sourdough Focaccia" ||
          normalizedName == "Sourdough Bagels" ||
-         normalizedName == "Cinnamon Rolls" ||
          normalizedName == "Hamburger Buns";
 }

@@ -31,6 +31,10 @@ struct RecipePreset {
   // step (autolyse, mixing in salt/yeast, kneading) that must happen before monitoring starts.
   const char* premixNote = nullptr;
   uint16_t referenceFloorMinutes = 20;
+  // An extra readiness check appended to the standard "what to test before Finish Proof" wording
+  // for the Bulk stage, for doughs where strength matters beyond rise (e.g. enriched dough that
+  // should stretch thin without tearing). Phrased as a noun phrase that reads after "and ...".
+  const char* bulkReadinessCheck = nullptr;
 };
 
 const RecipePreset* allVisibleRecipePresets(size_t& count);
@@ -39,7 +43,8 @@ String normalizeProfileName(const String& name);
 bool findRecipePreset(const String& name, RecipePreset& preset);
 String proofProfilesJson();
 bool profileRequiresStageSetupReset(const String& name);
-// True for starter-leavened recipes, where published bulk-fermentation guidance ties the right
+// True for most starter-leavened recipes (Cinnamon Rolls is a measured exception, see the
+// definition), where published bulk-fermentation guidance ties the right
 // rise target to dough temperature. Commercial-yeast recipes are excluded even when their bulk
 // stage runs warm, since their own instructions target a fixed rise (e.g. "until doubled") and
 // expect only the *time* to get there to vary with temperature, not the target itself.
