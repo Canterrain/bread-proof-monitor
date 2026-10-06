@@ -43,6 +43,11 @@ const RecipePreset kVisibleRecipePresets[] = {
      "Complete the recipe's tangzhong and mixing steps first."},
     {"Everyday Bread", "Baguettes", 90, 50, true, 0, {},
      "https://www.kingarthurbaking.com/recipes/sourdough-baguettes-recipe"},
+    {"Everyday Bread", "Scali Bread", 90, 0, false, 0, {},
+     "https://www.kingarthurbaking.com/recipes/scali-bread-recipe",
+     "Divide, rope, and braid the dough, then follow the recipe's final rise instead of the "
+     "monitor. A braided loaf isn't a good shape for the sensor to track.",
+     "Make the stiff overnight preferment the day before and mix the dough per the recipe first."},
     {"Pizza and Flatbread", "Pizza Dough", 50, 0, false, 0, {},
      "https://www.kingarthurbaking.com/recipes/pizza-crust-recipe",
      "Shape the dough, then follow the recipe's remaining rests and final rise instead of "
