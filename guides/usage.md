@@ -20,11 +20,15 @@ The dashboard refreshes every 15 seconds. Sensors are normally read about every 
 
 Rise is calculated from dough height relative to the calibrated container. For profiles with folds, displayed progress includes progress carried forward from earlier segments. It is a guide to the monitored process, not a direct measurement of dough volume.
 
-The distance reading is filtered using up to three valid samples and smoothing. A higher progress reading must pass an additional confirmation period before it becomes the retained peak used for fold and target decisions.
+Each distance reading is the median of five valid samples, followed by smoothing. A higher progress reading must pass an additional confirmation period before it becomes the retained peak used for fold and target decisions. That period is about 8 seconds for a deep dough and stretches up to about 90 seconds for a shallow one, because a few millimeters of sensor noise is a much larger share of a shallow dough's height.
 
 The monitor also enforces a minimum time for each segment. At 75°F this is generally 20 minutes, or 10 minutes for Focaccia. With a working temperature sensor, it scales that time within an 8–40 minute range. The sensor measures **ambient** temperature; it isn't a probe inside the dough. Paused time is excluded.
 
+For most sourdough profiles, the target and fold triggers also adjust for temperature. Warmer dough lowers them so it is caught before it overproofs, using a slow average of the ambient reading (roughly an hour) rather than every swing in the air. A cooler room never raises them above the recipe's own numbers. Folds scale the same way, so they stay at the same fraction of the way to the target. Yeast profiles aren't adjusted.
+
 You may see **Confirming target reached** while the displayed percentage is already at the target. The monitor is waiting for its confirmation conditions. These checks help with noise; you should still judge the dough before finishing.
+
+If the confirmed rise gains less than 2 points in 30 minutes, and no fold or target is close, the status reads **Rise has slowed** and suggests checking the dough. That can be normal in a cool room or an early slow phase. The message clears on its own once the rise picks up, and the monitor keeps tracking either way.
 
 ## Folds and Other Handling Steps
 

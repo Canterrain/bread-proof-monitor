@@ -27,6 +27,15 @@ constexpr unsigned long kPeakConfirmMs = 8000;
 constexpr unsigned long kMaxPeakConfirmMs = 90000;
 constexpr float kTallConfirmReferenceHeightMm = 60.0f;
 constexpr float kShallowConfirmReferenceHeightMm = 15.0f;
+// "Rise has slowed" message: the confirmed peak has to gain kStallMinGainPercent within
+// kStallWindowMs, or the monitor says so - unless a fold or the target is already within
+// kStallNearMilestonePercent (it is about to fire anyway). Measurement-based, not a timer: the
+// window only measures how fast the dough is moving. First-guess numbers from the 2026-10-06
+// no-knead bake (a cold-kitchen dough sat flat for about an hour with nothing to say so); tune
+// against real runs.
+constexpr unsigned long kStallWindowMs = 30UL * 60UL * 1000UL;
+constexpr float kStallMinGainPercent = 2.0f;
+constexpr float kStallNearMilestonePercent = 3.0f;
 constexpr unsigned long kDefaultReferenceFloorSeconds = 20 * 60;
 constexpr unsigned long kMinSegmentFloorSeconds = 8 * 60;
 constexpr unsigned long kMaxSegmentFloorSeconds = 40 * 60;
@@ -61,6 +70,12 @@ bool loadSelectedPreset(const AppState& state, RecipePreset& preset) {
   return findRecipePreset(state.selectedRecipe, preset);
 }
 
+// The temperature that scaling decisions use: the slow-moving copy, not the raw air reading. Falls
+// back to the raw reading until the smoothed copy has been seeded.
+float scalingTemperature(const AppState& state) {
+  return state.scalingTemperatureF > 0.0f ? state.scalingTemperatureF : state.temperatureF;
+}
+
 // The minimum time a segment must run before a fold/target crossing is trusted, scaled by
 // measured temperature: warmer dough can legitimately move faster, colder dough should move
 // slower, so an implausibly-fast reading is more suspicious in a cold kitchen, not less.
@@ -72,7 +87,7 @@ unsigned long requiredSegmentFloorSeconds(const AppState& state) {
 
   if (!state.shtReady) return referenceSeconds;
 
-  const float scale = powf(2.0f, (state.temperatureF - kReferenceTempF) / kFermentationDoublingSpanF);
+  const float scale = powf(2.0f, (scalingTemperature(state) - kReferenceTempF) / kFermentationDoublingSpanF);
   if (scale <= 0.0f) return referenceSeconds;
 
   const unsigned long scaledSeconds = static_cast<unsigned long>(referenceSeconds / scale);
@@ -85,10 +100,14 @@ unsigned long requiredSegmentFloorSeconds(const AppState& state) {
 // temperature much more steeply than the confirm-window floor above does - roughly a halving
 // every 6F around the same 75F reference, versus that floor's gentler 18F-doubling - because
 // warm dough needs to be caught earlier to avoid overproofing, not just trusted sooner once
-// crossed. Clamped to a 0.5-2.5x range so a stale or extreme reading can't send the live
-// target somewhere implausible.
+// crossed. Clamped to a 1.0-2.5x range: warmth can only LOWER a target or fold trigger, never raise
+// it above its authored value. On a live no-knead bake (2026-10-06) a cooling kitchen kept pushing
+// the first fold up from 18.5% to 21% while the dough barely moved, so the goalpost receded as
+// fast as the dough advanced. A dough that has reached the authored rise has done what the recipe
+// asked, however cold the room is. The cost is that a cold bulk is called at the 75F number,
+// slightly earlier than published guidance for cool dough.
 constexpr float kTargetDoublingSpanF = 6.0f;
-constexpr float kMinTemperatureRiseScale = 0.5f;
+constexpr float kMinTemperatureRiseScale = 1.0f;
 constexpr float kMaxTemperatureRiseScale = 2.5f;
 
 float temperatureRiseScale(const AppState& state) {
@@ -97,7 +116,7 @@ float temperatureRiseScale(const AppState& state) {
   // only starter-leavened ones get this adjustment. See recipeUsesTemperatureScaledTarget().
   if (!recipeUsesTemperatureScaledTarget(state.selectedRecipe)) return 1.0f;
 
-  float scale = powf(2.0f, (state.temperatureF - kReferenceTempF) / kTargetDoublingSpanF);
+  float scale = powf(2.0f, (scalingTemperature(state) - kReferenceTempF) / kTargetDoublingSpanF);
   if (scale < kMinTemperatureRiseScale) scale = kMinTemperatureRiseScale;
   if (scale > kMaxTemperatureRiseScale) scale = kMaxTemperatureRiseScale;
   return scale;
@@ -222,6 +241,7 @@ void clearActiveProofRun(AppState& state) {
   state.pendingEventActive = false;
   state.pendingEventNotified = false;
   state.settlingActive = false;
+  state.stallRefMillis = 0;
   state.proofState = ProofState::NotStarted;
 }
 
@@ -288,6 +308,23 @@ unsigned long peakConfirmMs(const AppState& state) {
   const float t = (kTallConfirmReferenceHeightMm - baselineHeight) /
                    (kTallConfirmReferenceHeightMm - kShallowConfirmReferenceHeightMm);
   return kPeakConfirmMs + static_cast<unsigned long>(t * (kMaxPeakConfirmMs - kPeakConfirmMs));
+}
+
+// True when the confirmed peak hasn't gained kStallMinGainPercent in kStallWindowMs and neither
+// the next fold nor the target is within kStallNearMilestonePercent. Only while actively running:
+// not while settling, waiting on a fold, paused, finished, or already at target.
+bool riseStalled(const AppState& state) {
+  if (state.proofState != ProofState::Running) return false;
+  if (state.settlingActive || state.pendingEventActive || state.stallRefMillis == 0) return false;
+  if (!riseInputsReady(state) || proofDistanceReadingStale(state)) return false;
+  if (millis() - state.stallRefMillis < kStallWindowMs) return false;
+
+  float nextMilestone = liveTargetRisePercent(state);
+  const ActiveFermentationEventStatus eventStatus = currentFermentationEvent(state);
+  if (eventStatus.exists) {
+    nextMilestone = liveTriggerRisePercent(state, eventStatus.event.triggerRisePercent);
+  }
+  return (nextMilestone - state.peakProgressPercent) > kStallNearMilestonePercent;
 }
 
 bool proofHasEmptyCalibration(const AppState& state) {
@@ -464,6 +501,7 @@ String statusText(const AppState& state) {
   const float rise = overallProgressPercent(state);
   const float liveTarget = liveTargetRisePercent(state);
   if (rise >= liveTarget) return "Confirming target reached";
+  if (riseStalled(state)) return "Rise has slowed";
   if (rise < 10.0f) return "Just getting started";
   if (rise < liveTarget * 0.75f) return "Rising";
   return "Getting close";
@@ -608,6 +646,14 @@ String currentStepInstruction(const AppState& state) {
            "time has passed at this temperature before finishing, so an unrealistically fast "
            "measurement isn't trusted on its own. No action needed, this resolves on its own "
            "shortly.";
+  }
+
+  if (riseStalled(state)) {
+    return "The rise has gained less than 2 points in the last 30 minutes and is still short of "
+           "the next step. That can be normal in a cool room or an early slow phase. Check the "
+           "dough: if it still looks puffy and active, keep waiting. If it looks flat or "
+           "sluggish, it may need a warmer spot or more time. The monitor keeps tracking either "
+           "way.";
   }
 
   return "Keep monitoring until the dough reaches the selected target rise.";
@@ -780,6 +826,8 @@ void resumeProof(AppState& state) {
   state.proofStartedAtMillis = millis();
   state.segmentStartedAtMillis = millis();
   state.resumeIgnoreUntil = millis() + 6000;
+  // Paused time shouldn't count toward a stall.
+  state.stallRefMillis = 0;
   state.proofState = ProofState::Running;
   updateProofStateFromRise(state);
 }
@@ -878,8 +926,10 @@ void updateProofStateFromRise(AppState& state) {
     const unsigned long settleWindowSeconds =
         state.settlingIsPostDisturbance ? kPostDisturbanceSettleSeconds : kSettleWindowSeconds;
     if (currentSegmentElapsedSeconds(state) < settleWindowSeconds) {
-      // Nothing counts yet - no peak, no fold, no target.
+      // Nothing counts yet - no peak, no fold, no target, and the stall window starts fresh once
+      // the hold ends.
       state.pendingEventActive = false;
+      state.stallRefMillis = 0;
       state.proofState = ProofState::Running;
       return;
     }
@@ -917,6 +967,18 @@ void updateProofStateFromRise(AppState& state) {
   } else {
     state.peakCandidateSinceMillis = 0;
   }
+
+  // Stall tracking for the "rise has slowed" message: restart the window whenever the confirmed
+  // peak gains kStallMinGainPercent. While a fold is pending the peak is frozen on purpose, so
+  // that isn't a stall - hold the reference unset until the fold is done.
+  if (state.pendingEventActive) {
+    state.stallRefMillis = 0;
+  } else if (state.stallRefMillis == 0 ||
+             state.peakProgressPercent >= state.stallRefPeakPercent + kStallMinGainPercent) {
+    state.stallRefPeakPercent = state.peakProgressPercent;
+    state.stallRefMillis = millis();
+  }
+
   const ActiveFermentationEventStatus eventStatus = currentFermentationEvent(state);
   if (eventStatus.exists && eventStatus.due) {
     state.pendingEventActive = true;

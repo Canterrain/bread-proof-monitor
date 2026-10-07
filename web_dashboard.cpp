@@ -75,6 +75,8 @@ String liveDataJson(const AppState& state) {
   json += "\"instantRawProgressPercent\":" + String(instantRawProgressPercent(state), 1) + ",";
   json += "\"peakDeadbandPercent\":" + String(peakDeadbandPercent(state), 2) + ",";
   json += "\"peakConfirmMs\":" + String(peakConfirmMs(state)) + ",";
+  json += "\"scalingTemperature\":" + String(state.scalingTemperatureF, 1) + ",";
+  json += "\"riseStalled\":" + String(jsonBool(riseStalled(state))) + ",";
   json += "\"segmentElapsedSeconds\":" + String(currentSegmentElapsedSeconds(state)) + ",";
   json += "\"settlingActive\":" + String(jsonBool(state.settlingActive)) + ",";
   json += "\"settlingIsPostDisturbance\":" + String(jsonBool(state.settlingIsPostDisturbance)) + ",";

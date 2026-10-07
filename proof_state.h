@@ -43,6 +43,8 @@ float displayRisePercent(const AppState& state);
 float instantRawProgressPercent(const AppState& state);
 float peakDeadbandPercent(const AppState& state);
 unsigned long peakConfirmMs(const AppState& state);
+// True when the confirmed rise has gone quiet: see kStallWindowMs in proof_state.cpp.
+bool riseStalled(const AppState& state);
 
 unsigned long currentElapsedSeconds(const AppState& state);
 unsigned long currentSegmentElapsedSeconds(const AppState& state);

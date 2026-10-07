@@ -9,6 +9,10 @@ namespace {
 Adafruit_VL53L0X gLox;
 Adafruit_SHT31 gSht31 = Adafruit_SHT31();
 constexpr unsigned long kDistanceStaleAfterMs = 15000;
+// Per-tick blend for AppState::scalingTemperatureF. Ticks run every few seconds, so 1/1350 gives
+// a time constant of roughly 45-60 minutes: the dough's own temperature lags the air around it,
+// and a bulk that gains a few points an hour shouldn't have its targets chase every air wobble.
+constexpr float kScalingTempAlpha = 1.0f / 1350.0f;
 
 float readDistanceMm() {
   VL53L0X_RangingMeasurementData_t measure;
@@ -118,7 +122,14 @@ void readSensors(AppState& state) {
     const float tempC = gSht31.readTemperature();
     const float humidity = gSht31.readHumidity();
 
-    if (!isnan(tempC)) state.temperatureF = (tempC * 9.0f / 5.0f) + 32.0f;
+    if (!isnan(tempC)) {
+      state.temperatureF = (tempC * 9.0f / 5.0f) + 32.0f;
+      if (state.scalingTemperatureF <= 0.0f) {
+        state.scalingTemperatureF = state.temperatureF;
+      } else {
+        state.scalingTemperatureF += (state.temperatureF - state.scalingTemperatureF) * kScalingTempAlpha;
+      }
+    }
     if (!isnan(humidity)) state.humidityPercent = humidity;
   }
 

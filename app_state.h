@@ -68,7 +68,17 @@ struct AppState {
   // window - see updateProofStateFromRise() in proof_state.cpp.
   float lastRawDistanceMm = 0.0f;
   float temperatureF = 0.0f;
+  // A slow-moving copy of temperatureF (roughly an hour's time constant) used to scale targets,
+  // fold triggers, and the segment time floor. The sensor reads air in a lidded container, which
+  // swings much faster than the dough's own temperature, so scaling off the raw reading made the
+  // goalposts chase small air changes - see sensor_reader.cpp.
+  float scalingTemperatureF = 0.0f;
   float humidityPercent = 0.0f;
+  // Reference point for the "rise has slowed" message: the confirmed peak and when it was last
+  // set. Moves up whenever the peak gains kStallMinGainPercent. Not persisted - a reboot just
+  // restarts the window.
+  float stallRefPeakPercent = 0.0f;
+  unsigned long stallRefMillis = 0;
   float finalRisePercent = 0.0f;
 
   ProofState proofState = ProofState::NotStarted;
