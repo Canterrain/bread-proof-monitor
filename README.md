@@ -74,7 +74,7 @@ You don't need Arduino IDE to use the browser installer. If you'd rather build i
 
 1. Open your phone or computer's **Wi-Fi settings** and join **ProofMonitor-Setup**. The password is **sourdough**.
 2. Open [http://192.168.4.1](http://192.168.4.1).
-3. Choose your home Wi-Fi network and enter its password.
+3. Choose your home Wi-Fi network, enter its password, and pick Fahrenheit or Celsius for temperature display.
 4. If you want phone alerts, copy the generated ntfy topic and subscribe to it in the ntfy app.
 5. Save, wait for the monitor to restart, and reconnect your phone or computer to your home network.
 6. Open **[http://proofmonitor.local](http://proofmonitor.local)**.

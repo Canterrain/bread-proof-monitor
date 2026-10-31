@@ -23,6 +23,15 @@ void persistState() {
   gState->lastProgressSaveMillis = millis();
 }
 
+float fahrenheitToCelsius(float fahrenheit) {
+  return (fahrenheit - 32.0f) * 5.0f / 9.0f;
+}
+
+String temperatureDisplayText(const AppState& state) {
+  if (state.useCelsius) return String(fahrenheitToCelsius(state.temperatureF), 1) + " &deg;C";
+  return String(state.temperatureF, 1) + " &deg;F";
+}
+
 void reconcileProofStateWithTarget() {
   updateProofStateFromRise(*gState);
 }
@@ -40,7 +49,11 @@ String liveDataJson(const AppState& state) {
   json += "\"distance\":" + String(state.smoothedDistanceMm, 1) + ",";
   json += "\"currentHeight\":" + String(currentDoughHeightMm(state), 1) + ",";
   json += "\"startingHeight\":" + String(startingDoughHeightMm(state), 1) + ",";
+  // "temperature" stays Fahrenheit so anything already reading /data keeps working; the dashboard
+  // picks which to show from useCelsius.
   json += "\"temperature\":" + String(state.temperatureF, 1) + ",";
+  json += "\"temperatureC\":" + String(fahrenheitToCelsius(state.temperatureF), 1) + ",";
+  json += "\"useCelsius\":" + String(state.useCelsius ? "true" : "false") + ",";
   json += "\"humidity\":" + String(state.humidityPercent, 1) + ",";
   json += "\"elapsed\":\"" + jsonEscape(elapsedText(state)) + "\",";
   json += "\"phoneAlert\":\"" + phoneAlertText(state) + "\",";
@@ -131,9 +144,9 @@ String dashboardPage(const AppState& state) {
           <span class="meta-label">Temperature</span>
           <span class="meta-value" id="temperatureValue">)rawliteral";
 
-  html += String(state.temperatureF, 1);
+  html += temperatureDisplayText(state);
 
-  html += R"rawliteral( &deg;F</span>
+  html += R"rawliteral(</span>
         </div>
         <div class="meta-chip">
           <span class="meta-label">Humidity</span>
@@ -397,6 +410,16 @@ String dashboardPage(const AppState& state) {
     </details>
 
     <details>
+      <summary>Display</summary>
+      <div class="small">Temperature is shown in this unit on every device that opens this dashboard.</div>
+      <button class="secondary" id="tempUnitButton" onclick="sendAction('/toggle-temp-unit')">)rawliteral";
+
+  html += state.useCelsius ? "Show Fahrenheit" : "Show Celsius";
+
+  html += R"rawliteral(</button>
+    </details>
+
+    <details>
       <summary>Advanced</summary>
       <div class="small">Developer / testing</div>
       <button class="secondary" onclick="sendAction('/use-calibration-profile')">Use Calibration Test Profile</button>
@@ -475,6 +498,21 @@ String setupPage(const AppState& state) {
       <input id="pass" type="password" placeholder="Leave blank to keep existing password">
     </label>
 
+    <label>Temperature units
+      <select id="tempUnit">
+        <option value="F")rawliteral";
+
+  html += state.useCelsius ? "" : " selected";
+
+  html += R"rawliteral(>Fahrenheit (&deg;F)</option>
+        <option value="C")rawliteral";
+
+  html += state.useCelsius ? " selected" : "";
+
+  html += R"rawliteral(>Celsius (&deg;C)</option>
+      </select>
+    </label>
+
     <label>Phone alert topic</label>
     <div class="topic" id="topicText">)rawliteral";
 
@@ -525,6 +563,10 @@ void handleData() {
 
 void handleSaveConfig() {
   saveWifiConfig(*gPrefs, *gState, gServer->arg("ssid"), gServer->arg("pass"));
+  if (gServer->hasArg("units")) {
+    gState->useCelsius = gServer->arg("units") == "C";
+    gPrefs->putBool("useC", gState->useCelsius);
+  }
   ensureNtfyTopic(*gPrefs, *gState);
   gServer->send(200, "text/plain", "OK");
   scheduleRestart(*gState);
@@ -740,6 +782,12 @@ void handleResetSetup() {
   scheduleRestart(*gState);
 }
 
+void handleToggleTempUnit() {
+  gState->useCelsius = !gState->useCelsius;
+  gPrefs->putBool("useC", gState->useCelsius);
+  gServer->send(200, "text/plain", "OK");
+}
+
 void handleTestNtfy() {
   const bool sent = sendNtfyNotification(*gState, "Proof Monitor test alert.");
   gServer->send(sent ? 200 : 500, "text/plain", sent ? "OK" : "FAILED");
@@ -771,4 +819,5 @@ void configureWebServer(WebServer& server, Preferences& prefs, AppState& state) 
   server.on("/use-calibration-profile", HTTP_POST, handleUseCalibrationProfile);
   server.on("/reset-setup", HTTP_POST, handleResetSetup);
   server.on("/test-ntfy", HTTP_POST, handleTestNtfy);
+  server.on("/toggle-temp-unit", HTTP_POST, handleToggleTempUnit);
 }

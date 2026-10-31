@@ -694,7 +694,8 @@ function applyLiveData(data) {
   setText('riseValue', data.rise + '%');
   setText('statusValue', data.status);
   setText('elapsedValue', data.elapsed);
-  setText('temperatureValue', data.temperature + ' \u00B0F');
+  setText('temperatureValue', data.useCelsius ? data.temperatureC + ' \u00B0C' : data.temperature + ' \u00B0F');
+  setText('tempUnitButton', data.useCelsius ? 'Show Fahrenheit' : 'Show Celsius');
   setText('humidityValue', data.humidity + '%');
   setText('profileValue', data.showProfilePicker ? data.profile : data.profile + ' (' + data.stage + ')');
   setText('stageValue', data.stage);
@@ -1062,6 +1063,7 @@ function saveConfig() {
   const data = new URLSearchParams();
   data.append('ssid', ssid);
   data.append('pass', document.getElementById('pass').value);
+  data.append('units', document.getElementById('tempUnit').value);
 
   fetch('/save-config', {
     method: 'POST',

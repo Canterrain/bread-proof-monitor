@@ -16,13 +16,15 @@ Changing to a different profile clears the active run and empty calibration, eve
 
 ## Reading the Dashboard
 
+Temperature shows in °F by default. You choose it during first-time setup, and you can change it later: open **Display** near the bottom of the dashboard and press **Show Celsius** (or **Show Fahrenheit**); the choice is saved on the monitor and applies on every device. It only changes how the reading is shown, not how the monitor behaves.
+
 The dashboard refreshes every 15 seconds. Sensors are normally read about every two seconds, so phone alerts can arrive before the next dashboard refresh.
 
 Rise is calculated from dough height relative to the calibrated container. For profiles with folds, displayed progress includes progress carried forward from earlier segments. It is a guide to the monitored process, not a direct measurement of dough volume.
 
 Each distance reading is the median of five valid samples, followed by smoothing. A higher progress reading must pass an additional confirmation period before it becomes the retained peak used for fold and target decisions. That period is about 8 seconds for a deep dough and stretches up to about 90 seconds for a shallow one, because a few millimeters of sensor noise is a much larger share of a shallow dough's height.
 
-The monitor also enforces a minimum time for each segment. At 75°F this is generally 20 minutes, or 10 minutes for Focaccia. With a working temperature sensor, it scales that time within an 8–40 minute range. The sensor measures **ambient** temperature; it isn't a probe inside the dough. Paused time is excluded.
+The monitor also enforces a minimum time for each segment. At 75°F (24°C) this is generally 20 minutes, or 10 minutes for Focaccia. With a working temperature sensor, it scales that time within an 8–40 minute range. The sensor measures **ambient** temperature; it isn't a probe inside the dough. Paused time is excluded.
 
 For most sourdough profiles, the target and fold triggers also adjust for temperature. Warmer dough lowers them so it is caught before it overproofs, using a slow average of the ambient reading (roughly an hour) rather than every swing in the air. A cooler room never raises them above the recipe's own numbers. Folds scale the same way, so they stay at the same fraction of the way to the target. Yeast profiles aren't adjusted.
 

@@ -35,6 +35,9 @@ struct AppState {
   bool awaitingFinalProofStart = false;
   bool pendingEventActive = false;
   bool pendingEventNotified = false;
+  // Display-only preference: show temperatures in Celsius on the dashboard. All the scaling math
+  // stays in Fahrenheit internally (temperatureF), so this never changes proof behavior.
+  bool useCelsius = false;
   bool outcomeFeedbackPending = false;
   // A second outcome can already be waiting when the first hasn't been rated yet - e.g. Bulk
   // finishes (queuing a Bulk rating) and then Final finishes too before the Bulk rating was

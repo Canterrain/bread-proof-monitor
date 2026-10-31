@@ -147,6 +147,8 @@ String proofStateStorageValue(ProofState state) {
 }
 
 void loadAppState(Preferences& prefs, AppState& state) {
+  state.useCelsius = prefs.getBool("useC", false);
+
   const String savedProofState = prefs.getString(kProofStateKey, "");
 
   if (savedProofState.length() == 0) {
