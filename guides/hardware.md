@@ -4,8 +4,6 @@
 
 This covers getting a Rev A carrier PCB made and turning it into a working sensor mount. For the board's full technical reference (pinout, dimensions, design rules, verification results), see [`hardware/kicad/rev-a/README.md`](../hardware/kicad/rev-a/README.md).
 
-The lid and enclosure this carrier mounts into aren't designed yet, so this guide stops at a working, bench-wired sensor mount rather than a finished physical unit.
-
 ## 1. Order the PCB
 
 The fabrication files are in [`hardware/kicad/rev-a/RevA_Manufacturing_2026-08-26/`](../hardware/kicad/rev-a/RevA_Manufacturing_2026-08-26/). It's a conventional 2-layer board at standard prototype tolerances — no special fabrication options are needed.
@@ -13,7 +11,7 @@ The fabrication files are in [`hardware/kicad/rev-a/RevA_Manufacturing_2026-08-2
 - **Bare board only:** upload `RevA_Gerbers_NextPCB.zip` (or the `gerbers/` and `drill/` folders directly) to your fab house's quote tool. You'll receive an unpopulated board and need to hand-solder the four sockets yourself — see the carrier-assembled parts table in [`hardware/kicad/rev-a/README.md`](../hardware/kicad/rev-a/README.md#bill-of-materials) (or `bom/RevA_assembly_BOM.csv` directly) for the exact Samtec part numbers.
 - **Board with sockets pre-assembled:** if your fab offers PCB assembly (NextPCB does), upload the Gerbers/drill files for fabrication and also supply `bom/RevA_assembly_BOM.csv` and `position/RevA_placement.csv` for the assembly step. All four sockets are through-hole, so hand or wave soldering is the expected assembly method — a pick-and-place file has limited value here, but it's included for completeness.
 
-Either way, you're only ordering and paying for the bare carrier board and its four sockets — the ESP32 module and both sensor breakouts are never part of this order.
+Either way, you're only ordering and paying for the bare carrier board and its four sockets — the ESP32 module and both sensor breakouts are never part of this order. You can order through sites like [NextPCB](https://www.nextpcb.com/) who sponsored this project.
 
 ## 2. Buy the plug-in modules
 
