@@ -1,6 +1,7 @@
 # Bread Proof Monitor
 
 [![Watch the Bread proof Monitor video](https://github.com/user-attachments/assets/b62e2ff1-4c6a-4fda-ae06-24272c835111)](https://www.youtube.com/watch?v=_b9i-Xxo2wM)
+**Click the image above to see more about this project on Youtube.**
 
 A dough rise monitor that helps you know when it's time to fold, shape, or bake.
 
