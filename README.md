@@ -1,5 +1,7 @@
 # Bread Proof Monitor
 
+[![Watch the Bread proof Monitor video](https://github.com/user-attachments/assets/b62e2ff1-4c6a-4fda-ae06-24272c835111)](https://www.youtube.com/watch?v=_b9i-Xxo2wM)
+
 A dough rise monitor that helps you know when it's time to fold, shape, or bake.
 
 Place the sensor over your dough, choose a bread profile, and follow the rise from your phone. The monitor keeps track of progress, reminds you about folds, and can send a notification when your dough reaches its target.
@@ -55,7 +57,7 @@ Mount the distance sensor securely above the dough with room for the tallest exp
 
 ### Optional: Rev A Carrier PCB
 
-If you'd rather not hand-wire and hot-glue sensors into a lid, a custom carrier PCB is available as a drop-in alternative to the wiring table above — plug-in sockets for the ELEGOO EL-SM-012, ALAMSCN VL53L0X-V2, and HiLetgo GY-SHT31-D modules replace the loose wiring entirely. It's entirely optional; the software doesn't know or care which mounting approach you used. Its [KiCad files and manufacturing package](hardware/kicad/rev-a/README.md) are included — see the [hardware guide](guides/hardware.md) for ordering and assembly steps. The lid and enclosure design is still in progress, so even with the PCB you'll still need your own way to mount it.
+If you'd rather not hand-wire and hot-glue sensors into a lid, a custom carrier PCB is available as a drop-in alternative to the wiring table above — plug-in sockets for the ELEGOO EL-SM-012, ALAMSCN VL53L0X-V2, and HiLetgo GY-SHT31-D modules replace the loose wiring entirely. It's entirely optional; the software doesn't know or care which mounting approach you used. Its [KiCad files and manufacturing package](hardware/kicad/rev-a/README.md) are included — see the [hardware guide](guides/hardware.md) for ordering and assembly steps. With thanks to [NEXTPCB](https://www.nextpcb.com/) who sponsored the above linked video.
 
 ## 🚀 Quick Start
 
