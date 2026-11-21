@@ -11,7 +11,7 @@ The fabrication files are in [`hardware/kicad/rev-a/RevA_Manufacturing_2026-08-2
 - **Bare board only:** upload `RevA_Gerbers_NextPCB.zip` (or the `gerbers/` and `drill/` folders directly) to your fab house's quote tool. You'll receive an unpopulated board and need to hand-solder the four sockets yourself — see the carrier-assembled parts table in [`hardware/kicad/rev-a/README.md`](../hardware/kicad/rev-a/README.md#bill-of-materials) (or `bom/RevA_assembly_BOM.csv` directly) for the exact Samtec part numbers.
 - **Board with sockets pre-assembled:** if your fab offers PCB assembly (NextPCB does), upload the Gerbers/drill files for fabrication and also supply `bom/RevA_assembly_BOM.csv` and `position/RevA_placement.csv` for the assembly step. All four sockets are through-hole, so hand or wave soldering is the expected assembly method — a pick-and-place file has limited value here, but it's included for completeness.
 
-Either way, you're only ordering and paying for the bare carrier board and its four sockets — the ESP32 module and both sensor breakouts are never part of this order. You can order through sites like [NextPCB](https://www.nextpcb.com/) who sponsored this project.
+Either way, you're only ordering and paying for the bare carrier board and its four sockets — the ESP32 module and both sensor breakouts are never part of this order. You can order through sites like [NextPCB](https://www.nextpcb.com/register?code=Anoraker) (referral link), who sponsored the PCB portion of this project. NextPCB also offers a [free functional circuit testing service](https://www.nextpcb.com/blog/free-functional-testing) for assembled boards.
 
 ## 2. Buy the plug-in modules
 

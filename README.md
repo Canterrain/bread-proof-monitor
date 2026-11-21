@@ -58,7 +58,7 @@ Mount the distance sensor securely above the dough with room for the tallest exp
 
 ### Optional: Rev A Carrier PCB
 
-If you'd rather not hand-wire and hot-glue sensors into a lid, a custom carrier PCB is available as a drop-in alternative to the wiring table above — plug-in sockets for the ELEGOO EL-SM-012, ALAMSCN VL53L0X-V2, and HiLetgo GY-SHT31-D modules replace the loose wiring entirely. It's entirely optional; the software doesn't know or care which mounting approach you used. Its [KiCad files and manufacturing package](hardware/kicad/rev-a/README.md) are included — see the [hardware guide](guides/hardware.md) for ordering and assembly steps. With thanks to [NEXTPCB](https://www.nextpcb.com/) who sponsored the above linked video.
+If you'd rather not hand-wire and hot-glue sensors into a lid, a custom carrier PCB is available as a drop-in alternative to the wiring table above. Plug-in sockets for the ELEGOO EL-SM-012, ALAMSCN VL53L0X-V2, and HiLetgo GY-SHT31-D modules replace the loose wiring entirely. It's entirely optional; the software doesn't know or care which mounting approach you used. Its [KiCad files and manufacturing package](hardware/kicad/rev-a/README.md) are included, and the [hardware guide](guides/hardware.md) covers ordering and assembly. The Rev A boards were manufactured and assembled by [NextPCB](https://www.nextpcb.com/register?code=Anoraker), who sponsored the PCB portion of this project. See [Sponsored by NextPCB](#-sponsored-by-nextpcb) below.
 
 ## 🚀 Quick Start
 
@@ -136,6 +136,21 @@ The firmware uses Arduino for ESP32. See the [development guide](guides/developm
 | `guides/` | Usage, development, and publishing instructions |
 | `hardware/` | Carrier PCB design and manufacturing files |
 | `tools/` | Local build, upload, and firmware packaging tools |
+
+## 🤝 Sponsored by NextPCB
+
+[<img src="docs/images/nextpcb-logo.png" alt="NextPCB" width="228">](https://www.nextpcb.com/register?code=Anoraker)
+
+The custom carrier boards for this project were manufactured and assembled by **NextPCB**, who sponsored the PCB portion of the Bread Proof Monitor project.
+
+I sent NextPCB the production files from KiCad and ordered five assembled boards. My experience with the process was good, including the review before manufacturing. They spotted an issue in the files I originally submitted and contacted me so I could correct it before the boards went into production. The finished boards arrived cleanly manufactured and assembled, and everything was well packaged when it reached me.
+
+If you want to have your own version of this board manufactured, the KiCad and production files are in [`hardware/kicad/rev-a/`](hardware/kicad/rev-a/README.md), and the [hardware guide](guides/hardware.md) walks through ordering.
+
+### Order Your Custom PCB
+
+- [Order via the NextPCB official website](https://www.nextpcb.com/register?code=Anoraker) (referral link)
+- [Free functional circuit testing service](https://www.nextpcb.com/blog/free-functional-testing): NextPCB offers to functionally test your assembled PCBs for free, to verify they work as expected before delivery
 
 ## Related Projects
 
